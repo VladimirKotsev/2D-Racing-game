@@ -1,93 +1,55 @@
+# Example file showing a basic pygame "game loop"
 import pygame
-import sys
 
-# Initialize Pygame
+# pygame setup
 pygame.init()
-
-track_image = pygame.image.load('../assets/images/Test_track.jpg')
-
-pygame.mixer.init()
-
-screen_width = 1000
-screen_height = 650
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Turbo Nafta")
-
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-
-car_width = 50
-car_height = 50
-
-car_x = 375
-car_y = 275
-
-crash_sound = pygame.mixer.Sound('../assets/sounds/crash_sound.wav')
-#off_track_sound = pygame.mixer.Sound('./assets/sounds/off_track_sound.wav')
-
+screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
-
 running = True
 
-# Track boundaries
-track_left = 0
-track_right = screen_width
-track_top = 0
-track_bottom = screen_height
+dt = 0
 
-# Main game loop
+player_pos1 = pygame.Vector2(screen.get_width() - screen.get_width() / 4, screen.get_height() / 2)
+player_pos2 = pygame.Vector2(screen.get_width() / 2 / 2, screen.get_height() / 2)
+
 while running:
+    # poll for events
+    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-        # Clear the screen
-        screen.fill((0, 0, 0))
-        # Draw the racing track
-        screen.blit(track_image, (0, 0))  # (0, 0) is the top-left corner of the screen
-        # Update the display
-        pygame.display.flip()
-        # Cap the frame rate to 60 FPS
-        clock.tick(60)
+    # fill the screen with a color to wipe away anything from last frame
+    screen.fill("purple")
 
-    # Check if the car goes outside the track
-    if car_x < track_left or car_x + car_width > track_right or car_y < track_top or car_y + car_height > track_bottom:
-        #off_track_sound.play()  # Play off-track sound
-        print("Car went off track!")
-        car_x = 375  # Reset car position (example)
-        car_y = 275
+    pygame.draw.circle(screen, "red", player_pos1, 40)
+    pygame.draw.circle(screen, "red", player_pos2, 40)
 
-    # Simulate a car crash (e.g., check for collisions with other objects or boundaries)
-    if car_x > screen_width // 2 - car_width // 2 and car_x < screen_width // 2 + car_width // 2 and car_y > screen_height // 2 - car_height // 2 and car_y < screen_height // 2 + car_height // 2:
-        crash_sound.play()  # Play crash sound
-        print("Car crashed!")
-        car_x = 375  # Reset car position (example)
-        car_y = 275
-
-    # Handle keys to move car (for demo purposes)
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        car_x -= 5
-    if keys[pygame.K_RIGHT]:
-        car_x += 5
+    if keys[pygame.K_w]:
+        player_pos1.y -= 300 * dt
+    if keys[pygame.K_s]:
+        player_pos1.y += 300 * dt
+    if keys[pygame.K_a]:
+        player_pos1.x -= 300 * dt
+    if keys[pygame.K_d]:
+        player_pos1.x += 300 * dt
+
     if keys[pygame.K_UP]:
-        car_y -= 5
+        player_pos2.y -= 300 * dt
     if keys[pygame.K_DOWN]:
-        car_y += 5
+        player_pos2.y += 300 * dt
+    if keys[pygame.K_LEFT]:
+        player_pos2.x -= 300 * dt
+    if keys[pygame.K_RIGHT]:
+        player_pos2.x += 300 * dt
 
-    # Fill screen with white
-    screen.fill(WHITE)
-
-    # Draw car (red rectangle)
-    pygame.draw.rect(screen, RED, (car_x, car_y, car_width, car_height))
-
-    # Update the display
+    # flip() the display to put your work on screen
     pygame.display.flip()
 
-    # Control the frame rate
-    clock.tick(60)
+    # limits FPS to 60
+    # dt is delta time in seconds since last frame, used for framerate-
+    # independent physics.
+    dt = clock.tick(60) / 1000
 
-# Quit Pygame
 pygame.quit()
-sys.exit()
