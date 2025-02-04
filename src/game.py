@@ -7,7 +7,9 @@ from physics import Car
 
 pygame.init()
 
+icon = pygame.image.load(WINDOW_ICON_PATH)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_icon(icon)
 pygame.display.set_caption("TurboNafta 3D")
 clock = pygame.time.Clock()
 
@@ -19,10 +21,10 @@ car1 = Car(300, 300, RED, {
 })
 
 car2 = Car(850, 300, BLUE, {
-    'up': pygame.K_KP8,
-    'down': pygame.K_KP5,
-    'left': pygame.K_KP4,
-    'right': pygame.K_KP6
+    'up': pygame.K_KP8 or pygame.K_UP,
+    'down': pygame.K_KP5 or pygame.K_DOWN,
+    'left': pygame.K_KP4 or pygame.K_LEFT,
+    'right': pygame.K_KP6 or pygame.K_RIGHT
 })
 
 while True:
