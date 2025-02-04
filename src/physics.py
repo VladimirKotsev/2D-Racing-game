@@ -68,7 +68,7 @@ class Car:
         self.angular_drag = CAR_ANGULAR_DRAG
 
     def update(self):
-        """Control the car movement."""
+        """Update car position and movement."""
         # Handle input
         keys = pygame.key.get_pressed()
 
@@ -112,7 +112,7 @@ class Car:
         self.position.y = max(0, min(self.position.y, SCREEN_HEIGHT))
 
     def draw(self, screen):
-        """Draw the car."""
+        """Render the car."""
         # Create points for the car polygon
         points = [
             (self.position.x - self.width / 2, self.position.y - self.height / 2),
@@ -132,3 +132,37 @@ class Car:
             rotated_points.append((rotated_x + center[0], rotated_y + center[1]))
 
         pygame.draw.polygon(screen, self.color, rotated_points)
+
+
+class Camera:
+    """Represents a POV for a player."""
+
+    def __init__(self, x, y):
+        """Return new instance of Camera."""
+        self.position = Vector(x, y)
+        self.target_position = Vector(x, y)
+        self.smoothness = CAMERA_SMOOTHNESS
+
+    def update(self, target_x, target_y):
+        """Update state of camera"""
+        self.target_position = Vector(target_x, target_y)
+        current_x = self.target_position.x - self.position.x
+        current_y = self.target_position.y - self.position.y
+        self.position.x += current_x * self.smoothness
+        self.position.y += current_y + self.smoothness
+
+
+class Track:
+    """Represents a track class."""
+
+    def __init__(self):
+        """Return a new instance of Track."""
+        self.width = TRACK_WIDTH
+        self.height = TRACK_HEIGHT
+        self.outer_bound = (0, 0, self.width, self.height)
+        self.checkpoint = []
+
+    def draw(self):
+        """Draw track to screen."""
+
+
