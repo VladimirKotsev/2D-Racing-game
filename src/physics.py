@@ -160,7 +160,7 @@ class Track:
         """Return a new instance of Track."""
         self.width = TRACK_WIDTH
         self.height = TRACK_HEIGHT
-        self.outer_bound = (0, 0, self.width, self.height)
+        self.outer_bounds = (0, 0, self.width, self.height)
         self.checkpoint = []
 
     def draw(self, screen, camera_offset, viewport_rect):
