@@ -67,12 +67,10 @@ class Car:
         self.angular_velocity = CAR_ANGULAR_VELOCITY
         self.angular_drag = CAR_ANGULAR_DRAG
 
-    def update(self):
+    def update(self, track_bounds):
         """Update car position and movement."""
-        # Handle input
         keys = pygame.key.get_pressed()
 
-        # Forward/Backward
         if keys[self.controls['up']]:
             self.acceleration = Vector(
                 math.sin(math.radians(self.rotation)) * CAR_FORWARD_VELOCITY,
@@ -86,34 +84,34 @@ class Car:
         else:
             self.acceleration = Vector()
 
-        # Turning
         if keys[self.controls['left']]:
             self.angular_velocity -= CAR_FORWARD_VELOCITY
         if keys[self.controls['right']]:
             self.angular_velocity += CAR_FORWARD_VELOCITY
 
-        # Update physics
         self.velocity = self.velocity.add(self.acceleration)
         self.velocity = self.velocity.multiply(self.drag)
 
-        # Limit speed
         speed = self.velocity.length()
         if speed > self.max_speed:
             self.velocity = self.velocity.multiply(self.max_speed / speed)
 
+        old_position = Vector(self.position.x, self.position.y)
         self.position = self.position.add(self.velocity)
 
-        # Update rotation
         self.angular_velocity *= self.angular_drag
         self.rotation += self.angular_velocity
 
-        # Screen boundaries
-        self.position.x = max(0, min(self.position.x, SCREEN_WIDTH))
-        self.position.y = max(0, min(self.position.y, SCREEN_HEIGHT))
+        #self.position.x = max(0, min(self.position.x, SCREEN_WIDTH))
+        #self.position.y = max(0, min(self.position.y, SCREEN_HEIGHT))
 
-    def draw(self, screen):
+        if not (track_bounds[0] <= self.position.x <= track_bounds[2] and
+                track_bounds[1] <= self.position.y <= track_bounds[3]):
+            self.position = old_position
+            self.velocity = Vector()
+
+    def draw(self, screen, camera_offset, viewport_rect):
         """Render the car."""
-        # Create points for the car polygon
         points = [
             (self.position.x - self.width / 2, self.position.y - self.height / 2),
             (self.position.x + self.width / 2, self.position.y - self.height / 2),
@@ -121,7 +119,6 @@ class Car:
             (self.position.x - self.width / 2, self.position.y + self.height / 2)
         ]
 
-        # Rotate points
         center = (self.position.x, self.position.y)
         rotated_points = []
         for point in points:
@@ -129,7 +126,10 @@ class Car:
             y = point[1] - center[1]
             rotated_x = x * math.cos(math.radians(self.rotation)) - y * math.sin(math.radians(self.rotation))
             rotated_y = x * math.sin(math.radians(self.rotation)) + y * math.cos(math.radians(self.rotation))
-            rotated_points.append((rotated_x + center[0], rotated_y + center[1]))
+
+            screen_x = rotated_x + center[0] - camera_offset.x + viewport_rect.x
+            screen_y = rotated_y + center[1] - camera_offset.y + viewport_rect.y
+            rotated_points.append((screen_x, screen_y))
 
         pygame.draw.polygon(screen, self.color, rotated_points)
 
@@ -151,6 +151,7 @@ class Camera:
         self.position.x += current_x * self.smoothness
         self.position.y += current_y * self.smoothness
 
+
 # To be continued...
 class Track:
     """Represents a track class."""
@@ -169,5 +170,3 @@ class Track:
         # A map will be rendered later on!!!
 
         screen.blit(surface, viewport_rect)
-
-
