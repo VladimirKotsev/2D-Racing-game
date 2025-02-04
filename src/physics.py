@@ -128,8 +128,23 @@ class Car:
             screen_y = rotated_y + center[1] - camera_offset.y + viewport_rect.y
             rotated_points.append((screen_x, screen_y))
 
-        if viewport_rect.collidepoint(rotated_points[0]) or viewport_rect.collidepoint(rotated_points[1]) or \
-                viewport_rect.collidepoint(rotated_points[2]) or viewport_rect.collidepoint(rotated_points[3]):
+        # x0, y0 = rotated_points[0]
+        # x1, y1 = rotated_points[1]
+        # x2, y2 = rotated_points[2]
+        # x3, y3 = rotated_points[3]
+        #
+        # # Find the average of the x and y coordinates
+        # center_x = (x0 + x1 + x2 + x3) / 4
+        # center_y = (y0 + y1 + y2 + y3) / 4
+        #
+        # # The center point
+        # center = (center_x, center_y)
+
+        # if viewport_rect.collidepoint(center):
+        #     pygame.draw.polygon(screen, self.color, rotated_points)
+
+        if (viewport_rect.collidepoint(rotated_points[0]) and viewport_rect.collidepoint(rotated_points[1])
+                and viewport_rect.collidepoint(rotated_points[2]) and viewport_rect.collidepoint(rotated_points[3])):
             pygame.draw.polygon(screen, self.color, rotated_points)
 
 
