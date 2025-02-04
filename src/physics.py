@@ -57,15 +57,15 @@ class Car:
         self.position = Vector(x, y)
         self.velocity = Vector()
         self.acceleration = Vector()
-        self.rotation = 0
+        self.rotation = CAR_ROTATION
         self.color = color
         self.controls = controls
-        self.width = 40
-        self.height = 100
-        self.max_speed = 8
-        self.drag = 0.98
-        self.angular_velocity = 0
-        self.angular_drag = 0.9
+        self.width = CAR_WIDTH
+        self.height = CAR_HEIGHT
+        self.max_speed = CAR_MAX_SPEED
+        self.drag = CAR_DRAG
+        self.angular_velocity = CAR_ANGULAR_VELOCITY
+        self.angular_drag = CAR_ANGULAR_DRAG
 
     def update(self):
         """Control the car movement."""
@@ -75,22 +75,22 @@ class Car:
         # Forward/Backward
         if keys[self.controls['up']]:
             self.acceleration = Vector(
-                math.sin(math.radians(self.rotation)) * 0.2,
-                -math.cos(math.radians(self.rotation)) * 0.2
+                math.sin(math.radians(self.rotation)) * CAR_FORWARD_VELOCITY,
+                -math.cos(math.radians(self.rotation)) * CAR_FORWARD_VELOCITY
             )
         elif keys[self.controls['down']]:
             self.acceleration = Vector(
-                -math.sin(math.radians(self.rotation)) * 0.1,
-                math.cos(math.radians(self.rotation)) * 0.1
+                -math.sin(math.radians(self.rotation)) * CAR_BACKWARD_VELOCITY,
+                math.cos(math.radians(self.rotation)) * CAR_BACKWARD_VELOCITY
             )
         else:
             self.acceleration = Vector()
 
         # Turning
         if keys[self.controls['left']]:
-            self.angular_velocity -= 0.2
+            self.angular_velocity -= CAR_FORWARD_VELOCITY
         if keys[self.controls['right']]:
-            self.angular_velocity += 0.2
+            self.angular_velocity += CAR_FORWARD_VELOCITY
 
         # Update physics
         self.velocity = self.velocity.add(self.acceleration)

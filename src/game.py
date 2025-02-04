@@ -18,11 +18,11 @@ car1 = Car(300, 300, RED, {
     'right': pygame.K_d
 })
 
-car2 = Car(700, 300, BLUE, {
-    'up': pygame.K_UP,
-    'down': pygame.K_DOWN,
-    'left': pygame.K_LEFT,
-    'right': pygame.K_RIGHT
+car2 = Car(850, 300, BLUE, {
+    'up': pygame.K_KP8,
+    'down': pygame.K_KP5,
+    'left': pygame.K_KP4,
+    'right': pygame.K_KP6
 })
 
 while True:
@@ -39,6 +39,8 @@ while True:
     screen.fill(WHITE)
     car1.draw(screen)
     car2.draw(screen)
+
+    pygame.draw.line(screen, BLACK, (SPLIT_WIDTH, 0), (SPLIT_WIDTH, SCREEN_HEIGHT), 2)
     pygame.display.flip()
 
     clock.tick(FPS)
