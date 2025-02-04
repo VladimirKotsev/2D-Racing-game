@@ -99,16 +99,13 @@ class Car:
         old_position = Vector(self.position.x, self.position.y)
         self.position = self.position.add(self.velocity)
 
-        self.angular_velocity *= self.angular_drag
-        self.rotation += self.angular_velocity
-
-        #self.position.x = max(0, min(self.position.x, SCREEN_WIDTH))
-        #self.position.y = max(0, min(self.position.y, SCREEN_HEIGHT))
-
         if not (track_bounds[0] <= self.position.x <= track_bounds[2] and
                 track_bounds[1] <= self.position.y <= track_bounds[3]):
             self.position = old_position
             self.velocity = Vector()
+
+        self.angular_velocity *= self.angular_drag
+        self.rotation += self.angular_velocity
 
     def draw(self, screen, camera_offset, viewport_rect):
         """Render the car."""
@@ -131,7 +128,9 @@ class Car:
             screen_y = rotated_y + center[1] - camera_offset.y + viewport_rect.y
             rotated_points.append((screen_x, screen_y))
 
-        pygame.draw.polygon(screen, self.color, rotated_points)
+        if viewport_rect.collidepoint(rotated_points[0]) or viewport_rect.collidepoint(rotated_points[1]) or \
+                viewport_rect.collidepoint(rotated_points[2]) or viewport_rect.collidepoint(rotated_points[3]):
+            pygame.draw.polygon(screen, self.color, rotated_points)
 
 
 class Camera:
@@ -161,7 +160,7 @@ class Track:
         self.width = TRACK_WIDTH
         self.height = TRACK_HEIGHT
         self.outer_bounds = (0, 0, self.width, self.height)
-        self.checkpoint = []
+        self.checkpoints = []
 
     def draw(self, screen, camera_offset, viewport_rect):
         """Render track."""

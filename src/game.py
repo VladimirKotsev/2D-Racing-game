@@ -43,16 +43,12 @@ while True:
             pygame.quit()
             sys.exit()
 
-    # Update
     car1.update(track.outer_bounds)
     car2.update(track.outer_bounds)
     camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
     camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
 
-    # Draw
-    screen.fill(WHITE)
-    # car1.draw(screen, camera1.position, player1_pov)
-    # car2.draw(screen, camera2.position, player2_pov)
+    screen.fill(BLACK)
 
     track.draw(screen, camera1.position, player1_pov)
     car1.draw(screen, camera1.position, player1_pov)
