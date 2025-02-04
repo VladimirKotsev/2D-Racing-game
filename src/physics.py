@@ -149,9 +149,9 @@ class Camera:
         current_x = self.target_position.x - self.position.x
         current_y = self.target_position.y - self.position.y
         self.position.x += current_x * self.smoothness
-        self.position.y += current_y + self.smoothness
+        self.position.y += current_y * self.smoothness
 
-
+# To be continued...
 class Track:
     """Represents a track class."""
 
@@ -162,7 +162,12 @@ class Track:
         self.outer_bound = (0, 0, self.width, self.height)
         self.checkpoint = []
 
-    def draw(self):
-        """Draw track to screen."""
+    def draw(self, screen, camera_offset, viewport_rect):
+        """Render track."""
+        surface = pygame.Surface((viewport_rect.width, viewport_rect.height))
+        surface.fill(GREEN)
+        # A map will be rendered later on!!!
+
+        screen.blit(surface, viewport_rect)
 
 

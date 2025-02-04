@@ -3,7 +3,7 @@ import sys
 
 # import all constants
 from constants import *
-from physics import Car
+from physics import *
 
 pygame.init()
 
@@ -26,6 +26,16 @@ car2 = Car(850, 300, BLUE, {
     'left': pygame.K_KP4 or pygame.K_LEFT,
     'right': pygame.K_KP6 or pygame.K_RIGHT
 })
+
+track = Track()
+
+# Create cameras
+camera1 = Camera(car1.position.x, car1.position.y)
+camera2 = Camera(car2.position.x, car2.position.y)
+
+# Create POV's
+player1_pov = pygame.Rect(0, 0, SPLIT_WIDTH, SCREEN_HEIGHT)
+player2_pov = pygame.Rect(SPLIT_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 while True:
     for event in pygame.event.get():
