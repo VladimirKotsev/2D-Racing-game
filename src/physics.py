@@ -128,21 +128,6 @@ class Car:
             screen_y = rotated_y + center[1] - camera_offset.y + viewport_rect.y
             rotated_points.append((screen_x, screen_y))
 
-        # x0, y0 = rotated_points[0]
-        # x1, y1 = rotated_points[1]
-        # x2, y2 = rotated_points[2]
-        # x3, y3 = rotated_points[3]
-        #
-        # # Find the average of the x and y coordinates
-        # center_x = (x0 + x1 + x2 + x3) / 4
-        # center_y = (y0 + y1 + y2 + y3) / 4
-        #
-        # # The center point
-        # center = (center_x, center_y)
-
-        # if viewport_rect.collidepoint(center):
-        #     pygame.draw.polygon(screen, self.color, rotated_points)
-
         if (viewport_rect.collidepoint(rotated_points[0]) and viewport_rect.collidepoint(rotated_points[1])
                 and viewport_rect.collidepoint(rotated_points[2]) and viewport_rect.collidepoint(rotated_points[3])):
             pygame.draw.polygon(screen, self.color, rotated_points)
@@ -175,12 +160,35 @@ class Track:
         self.width = TRACK_WIDTH
         self.height = TRACK_HEIGHT
         self.outer_bounds = (0, 0, self.width, self.height)
-        self.checkpoints = []
+        #self.checkpoints = []
+        self.checkpoints = [
+            (300, 300),
+            (2700, 300),
+            (2700, 1700),
+            (300, 1700)
+        ]
 
     def draw(self, screen, camera_offset, viewport_rect):
-        """Render track."""
-        surface = pygame.Surface((viewport_rect.width, viewport_rect.height))
-        surface.fill(GREEN)
-        # A map will be rendered later on!!!
+        # """Render track."""
+        # surface = pygame.Surface((viewport_rect.width, viewport_rect.height))
+        # surface.fill(GREEN)
+        # # A map will be rendered later on!!!
+        #
+        # screen.blit(surface, viewport_rect)
 
-        screen.blit(surface, viewport_rect)
+        # Create a surface for this viewport
+        viewport_surface = pygame.Surface((viewport_rect.width, viewport_rect.height))
+        viewport_surface.fill(GREEN)  # Draw grass background
+
+        # Draw track on viewport surface
+        track_points = [(x - camera_offset.x, y - camera_offset.y)
+                        for x, y in self.checkpoints]
+        track_points.append(track_points[0])  # Close the loop
+        pygame.draw.lines(viewport_surface, GRAY, False, track_points, 100)
+
+        # Draw checkpoints on viewport surface
+        for point in track_points[:-1]:
+            pygame.draw.circle(viewport_surface, WHITE, (int(point[0]), int(point[1])), 10)
+
+        # Blit the viewport surface onto the main screen at the correct position
+        screen.blit(viewport_surface, viewport_rect)
