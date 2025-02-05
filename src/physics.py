@@ -1,4 +1,5 @@
 import math
+import os
 import pygame
 from constants import *
 
@@ -10,6 +11,9 @@ class Vector:
         """Return a new instance of Vector."""
         self.x = x
         self.y = y
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
 
     def add(self, other):
         """Return a vector added to another vector."""
@@ -67,6 +71,12 @@ class Car:
         self.angular_velocity = CAR_ANGULAR_VELOCITY
         self.angular_drag = CAR_ANGULAR_DRAG
 
+        self.layers =[]
+        car_image_path = CAR_IMAGES_PATH + ('red_car' if color == RED else 'blue_car')
+        for img_file in sorted(os.listdir(car_image_path)):
+            img = pygame.image.load(os.path.join(car_image_path, img_file))
+            self.layers.append(img)
+
     def update(self, track_bounds):
         """Update car position and movement."""
         keys = pygame.key.get_pressed()
@@ -84,15 +94,18 @@ class Car:
         else:
             self.acceleration = Vector()
 
+        is_moving = self.velocity.length() > 0.7
         if keys[self.controls['left']]:
-            self.angular_velocity -= CAR_FORWARD_VELOCITY
+            if  is_moving:
+                self.angular_velocity -= CAR_FORWARD_VELOCITY
         if keys[self.controls['right']]:
-            self.angular_velocity += CAR_FORWARD_VELOCITY
-
-        self.velocity = self.velocity.add(self.acceleration)
-        self.velocity = self.velocity.multiply(self.drag)
+            if is_moving:
+                self.angular_velocity += CAR_FORWARD_VELOCITY
 
         speed = self.velocity.length()
+        self.velocity = self.velocity.multiply(self.drag)
+        self.velocity = self.velocity.add(self.acceleration)
+
         if speed > self.max_speed:
             self.velocity = self.velocity.multiply(self.max_speed / speed)
 
@@ -149,7 +162,6 @@ class Camera:
         current_y = self.target_position.y - self.position.y
         self.position.x += current_x * self.smoothness
         self.position.y += current_y * self.smoothness
-
 
 # To be continued...
 class Track:

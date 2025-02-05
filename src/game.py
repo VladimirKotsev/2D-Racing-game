@@ -16,7 +16,7 @@ icon = pygame.image.load(WINDOW_ICON_PATH)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_icon(icon)
 pygame.display.set_caption("TurboNafta 3D")
-car_images = [pygame.image.load(os.path.join(CAR_IMAGES_PATH, img)) for img in os.listdir(CAR_IMAGES_PATH)]
+#car_images = [pygame.image.load(os.path.join(CAR_IMAGES_PATH, img)) for img in os.listdir(CAR_IMAGES_PATH)]
 
 clock = pygame.time.Clock()
 
