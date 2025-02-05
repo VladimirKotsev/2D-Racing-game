@@ -1,6 +1,7 @@
 import math
 import os
 import pygame
+#from PIL import Image
 from constants import *
 
 
@@ -75,7 +76,8 @@ class Car:
         car_image_path = CAR_IMAGES_PATH + ('red_car' if color == RED else 'blue_car')
         for img_file in sorted(os.listdir(car_image_path)):
             img = pygame.image.load(os.path.join(car_image_path, img_file))
-            self.layers.append(img)
+            enlargen_img = pygame.transform.scale_by(img, (CAR_SPRITESTACK_ENLARGE, CAR_SPRITESTACK_ENLARGE))
+            self.layers.append(enlargen_img)
 
     def update(self, track_bounds):
         """Update car position and movement."""
@@ -134,7 +136,7 @@ class Car:
 
                 layer_pos = (
                     screen_position[0] - rotated_layer.get_width() // 2,
-                    screen_position[1] - rotated_layer.get_height() // 2 - i * 1
+                    screen_position[1] - rotated_layer.get_height() // 2 - i * CAR_LAYER_SPREAD
                 )
 
                 screen.blit(rotated_layer, layer_pos)
