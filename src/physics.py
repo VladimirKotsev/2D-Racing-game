@@ -120,30 +120,52 @@ class Car:
         self.angular_velocity *= self.angular_drag
         self.rotation += self.angular_velocity
 
+    def render_stack(self, screen, camera_offset, viewport_rect):
+        screen_position = (
+            self.position.x - camera_offset.x + viewport_rect.x,
+            self.position.y - camera_offset.y + viewport_rect.y
+        )
+
+        if (0 <= screen_position[0] <= viewport_rect.width and
+                0 <= screen_position[1] <= viewport_rect.height):
+
+            for i, layer in enumerate(self.layers):
+                rotated_layer = pygame.transform.rotate(layer, self.rotation)
+
+                layer_pos = (
+                    screen_position[0] - rotated_layer.get_width() // 2,
+                    screen_position[1] - rotated_layer.get_height() // 2 - i * 1
+                )
+
+                screen.blit(rotated_layer, layer_pos)
+
     def draw(self, screen, camera_offset, viewport_rect):
         """Render the car."""
-        points = [
-            (self.position.x - self.width / 2, self.position.y - self.height / 2),
-            (self.position.x + self.width / 2, self.position.y - self.height / 2),
-            (self.position.x + self.width / 2, self.position.y + self.height / 2),
-            (self.position.x - self.width / 2, self.position.y + self.height / 2)
-        ]
 
-        center = (self.position.x, self.position.y)
-        rotated_points = []
-        for point in points:
-            x = point[0] - center[0]
-            y = point[1] - center[1]
-            rotated_x = x * math.cos(math.radians(self.rotation)) - y * math.sin(math.radians(self.rotation))
-            rotated_y = x * math.sin(math.radians(self.rotation)) + y * math.cos(math.radians(self.rotation))
+        self.render_stack(screen, camera_offset, viewport_rect)
 
-            screen_x = rotated_x + center[0] - camera_offset.x + viewport_rect.x
-            screen_y = rotated_y + center[1] - camera_offset.y + viewport_rect.y
-            rotated_points.append((screen_x, screen_y))
-
-        if (viewport_rect.collidepoint(rotated_points[0]) and viewport_rect.collidepoint(rotated_points[1])
-                and viewport_rect.collidepoint(rotated_points[2]) and viewport_rect.collidepoint(rotated_points[3])):
-            pygame.draw.polygon(screen, self.color, rotated_points)
+        # points = [
+        #     (self.position.x - self.width / 2, self.position.y - self.height / 2),
+        #     (self.position.x + self.width / 2, self.position.y - self.height / 2),
+        #     (self.position.x + self.width / 2, self.position.y + self.height / 2),
+        #     (self.position.x - self.width / 2, self.position.y + self.height / 2)
+        # ]
+        #
+        # center = (self.position.x, self.position.y)
+        # rotated_points = []
+        # for point in points:
+        #     x = point[0] - center[0]
+        #     y = point[1] - center[1]
+        #     rotated_x = x * math.cos(math.radians(self.rotation)) - y * math.sin(math.radians(self.rotation))
+        #     rotated_y = x * math.sin(math.radians(self.rotation)) + y * math.cos(math.radians(self.rotation))
+        #
+        #     screen_x = rotated_x + center[0] - camera_offset.x + viewport_rect.x
+        #     screen_y = rotated_y + center[1] - camera_offset.y + viewport_rect.y
+        #     rotated_points.append((screen_x, screen_y))
+        #
+        # if (viewport_rect.collidepoint(rotated_points[0]) and viewport_rect.collidepoint(rotated_points[1])
+        #         and viewport_rect.collidepoint(rotated_points[2]) and viewport_rect.collidepoint(rotated_points[3])):
+        #     pygame.draw.polygon(screen, self.color, rotated_points)
 
 
 class Camera:
