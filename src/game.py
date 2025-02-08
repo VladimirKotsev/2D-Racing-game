@@ -10,6 +10,14 @@ pygame.display.set_caption("TurboNafta 3D")
 #car_images = [pygame.image.load(os.path.join(CAR_IMAGES_PATH, img)) for img in os.listdir(CAR_IMAGES_PATH)]
 
 clock = pygame.time.Clock()
+font = pygame.font.Font('freesansbold.ttf', 32)
+text1 = font.render('Player1', True, GRAY)
+text2 = font.render('Player2', True, GRAY)
+
+textRect1 = text1.get_rect()
+textRect2 = text2.get_rect()
+textRect1.center = (100, 50)
+textRect2.center = (SCREEN_WIDTH // 2 + 100, 50)
 
 car1 = Car(300, 300, RED, {
     'up': pygame.K_w,
@@ -56,6 +64,8 @@ while True:
     track.draw(screen, camera2.position, player2_pov)
     car1.draw(screen, camera2.position, player2_pov)
     car2.draw(screen, camera2.position, player2_pov)
+    screen.blit(text1, textRect1)
+    screen.blit(text2, textRect2)
 
     pygame.draw.line(screen, BLACK, (SPLIT_WIDTH, 0), (SPLIT_WIDTH, SCREEN_HEIGHT), 2)
     pygame.display.flip()
