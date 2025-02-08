@@ -1,7 +1,6 @@
 import math
 import os
 import pygame
-#from PIL import Image
 from constants import *
 
 
@@ -16,21 +15,27 @@ class Vector:
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
 
-    def add(self, other):
+    def __add__(self, other):
         """Return a vector added to another vector."""
         if isinstance(other, Vector):
             return Vector(self.x + other.x, self.y + other.y)
 
         return Vector(self.x + other, self.y + other)
 
-    def multiply(self, other):
+    def __sub__(self, other):
+        """Return a vector subtracted by another vector."""
+        if isinstance(other, Vector):
+            return Vector(self.x - other.x, self.y - other.y)
+        return Vector(self.x - other, self.y - other)
+
+    def __mul__(self, other):
         """Return a vector multiplied to another vector."""
         if isinstance(other, Vector):
             return Vector(self.x * other.x, self.y * other.y)
 
         return Vector(self.x * other, self.y * other)
 
-    def divide(self, other):
+    def __truediv__(self, other):
         """Return a vector divided by another vector."""
         if isinstance(other, Vector):
             return Vector(self.x / other.x, self.y / other.y)

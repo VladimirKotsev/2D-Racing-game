@@ -1,16 +1,7 @@
-import pygame
 import sys
-import os
-
-# import all constants
-from constants import *
 from physics import *
 
 pygame.init()
-
-#
-display = pygame.Surface((100, 100))
-#
 
 icon = pygame.image.load(WINDOW_ICON_PATH)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
