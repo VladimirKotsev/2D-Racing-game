@@ -43,6 +43,7 @@ while True:
 
     car1.update(track.outer_bounds)
     car2.update(track.outer_bounds)
+    car1.check_collision(car2)
     camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
     camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
 

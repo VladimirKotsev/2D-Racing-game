@@ -54,8 +54,7 @@ class Vector:
         """Return the normalized vector of this vector."""
         length = self.length()
         if length != 0:
-            return self.divide(length)
-
+            return self / length
         return Vector()
 
 
@@ -76,6 +75,7 @@ class Car:
         self.drag = CAR_DRAG
         self.angular_velocity = CAR_ANGULAR_VELOCITY
         self.angular_drag = CAR_ANGULAR_DRAG
+        self.collision_cooldown = 0
 
         self.layers =[]
         car_image_path = CAR_IMAGES_PATH + ('red_car' if color == RED else 'blue_car')
@@ -83,6 +83,96 @@ class Car:
             img = pygame.image.load(os.path.join(car_image_path, img_file))
             enlargen_img = pygame.transform.scale_by(img, (CAR_SPRITESTACK_ENLARGE, CAR_SPRITESTACK_ENLARGE))
             self.layers.append(enlargen_img)
+
+    def get_corners(self):
+        """Get the rotated corners of the car."""
+        half_width = self.width / 2
+        half_height = self.height / 2
+
+        sin_rot = math.sin(math.radians(self.rotation))
+        cos_rot = math.cos(math.radians(self.rotation))
+
+        corners = [
+            (-half_width, -half_height),
+            (half_width, -half_height),
+            (half_width, half_height),
+            (-half_width, half_height)
+        ]
+
+        rotated_corners = []
+        for x, y in corners:
+            rotated_x = x * cos_rot - y * sin_rot
+            rotated_y = x * sin_rot + y * cos_rot
+
+            world_x = rotated_x + self.position.x
+            world_y = rotated_y + self.position.y
+
+            rotated_corners.append((world_x, world_y))
+
+        return rotated_corners
+
+    def check_collision(self, other_car):
+        """Check and handle collision with another car."""
+        if self.collision_cooldown > 0 or other_car.collision_cooldown > 0:
+            return False
+
+        self_corners = self.get_corners()
+        other_corners = other_car.get_corners()
+
+        def get_projection_range(corners, axis):
+            dots = [axis.dot(Vector(x, y)) for x, y in corners]
+            return min(dots), max(dots)
+
+        def get_axes(corners):
+            axes = []
+            for i in range(len(corners)):
+                p1 = Vector(corners[i][0], corners[i][1])
+                p2 = Vector(corners[(i + 1) % len(corners)][0], corners[(i + 1) % len(corners)][1])
+                edge = p2 - p1
+                normal = Vector(-edge.y, edge.x).normalize()
+                axes.append(normal)
+            return axes
+
+        axes = get_axes(self_corners) + get_axes(other_corners)
+
+        collision = True
+        min_overlap = float('inf')
+        collision_normal = None
+
+        for axis in axes:
+            range1 = get_projection_range(self_corners, axis)
+            range2 = get_projection_range(other_corners, axis)
+
+            if range1[1] < range2[0] or range2[1] < range1[0]:
+                collision = False
+                break
+
+            overlap = min(range1[1], range2[1]) - max(range1[0], range2[0])
+            if overlap < min_overlap:
+                min_overlap = overlap
+                collision_normal = axis
+
+        if collision and collision_normal:
+            diff = self.position - other_car.position
+            if diff.dot(collision_normal) < 0:
+                collision_normal = Vector(-collision_normal.x, -collision_normal.y)
+
+            separation = collision_normal * (min_overlap / 2 + 5)
+            self.position = self.position + separation
+            other_car.position = other_car.position - separation
+
+            relative_velocity = self.velocity - other_car.velocity
+            bounce_force = collision_normal * (CAR_COLLISION_BOUNCE * relative_velocity.length())
+
+            self.velocity = bounce_force
+            other_car.velocity = bounce_force * -1
+
+            self.collision_cooldown = 0
+            other_car.collision_cooldown = 0
+
+            return True
+
+        return False
 
     def update(self, track_bounds):
         """Update car position and movement."""
@@ -110,14 +200,14 @@ class Car:
                 self.angular_velocity += CAR_FORWARD_VELOCITY
 
         speed = self.velocity.length()
-        self.velocity = self.velocity.multiply(self.drag)
-        self.velocity = self.velocity.add(self.acceleration)
+        self.velocity = self.velocity * self.drag
+        self.velocity = self.velocity + self.acceleration
 
         if speed > self.max_speed:
-            self.velocity = self.velocity.multiply(self.max_speed / speed)
+            self.velocity = self.velocity * (self.max_speed / speed)
 
         old_position = Vector(self.position.x, self.position.y)
-        self.position = self.position.add(self.velocity)
+        self.position = self.position + self.velocity
 
         if not (track_bounds[0] <= self.position.x <= track_bounds[2] and
                 track_bounds[1] <= self.position.y <= track_bounds[3]):
