@@ -2,7 +2,6 @@ import sys
 import time
 
 from physics import *
-
 pygame.init()
 from utils import *
 
@@ -26,6 +25,7 @@ car2 = Car(850, 300, BLUE, {
     'right': pygame.K_KP6 or pygame.K_RIGHT
 })
 
+#track_img = pygame.image.load('../assets/images/map/Austria.png')
 track = Track()
 
 # Create cameras
@@ -36,19 +36,19 @@ camera2 = Camera(car2.position.x, car2.position.y)
 player1_pov = pygame.Rect(0, 0, SPLIT_WIDTH, SCREEN_HEIGHT)
 player2_pov = pygame.Rect(SPLIT_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
-play_button = Button(SCREEN_WIDTH // 2 - 150 // 2, SCREEN_HEIGHT // 2 - 70, 150, 70, 'Play')
+play_button = Button(SCREEN_WIDTH // 2 - 180 // 2, SCREEN_HEIGHT // 2 - 90 // 2, 180, 90, 'Play')
 
 current_state = 1
 
 def run_countdown():
     for i in range(3, 0, -1):
         screen.fill(GRAY)
-        draw_text(str(i), font,  GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        draw_text(str(i), menu_font,  GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         time.sleep(1)
 
     screen.fill(GRAY)
-    draw_text("Go!", font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    draw_text("Go!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
     pygame.display.update()
     time.sleep(1)
 

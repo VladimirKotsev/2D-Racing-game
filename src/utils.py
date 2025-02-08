@@ -2,9 +2,10 @@ import pygame
 from constants import *
 
 icon = pygame.image.load(WINDOW_ICON_PATH)
-font = pygame.font.Font('freesansbold.ttf', 32)
-text1 = font.render('Player1', True, GRAY)
-text2 = font.render('Player2', True, GRAY)
+game_font = pygame.font.Font('freesansbold.ttf', 32)
+menu_font = pygame.font.Font('freesansbold.ttf', 64)
+text1 = game_font.render('Player1', True, GRAY)
+text2 = game_font.render('Player2', True, GRAY)
 
 textRect1 = text1.get_rect()
 textRect2 = text2.get_rect()
@@ -23,7 +24,7 @@ class Button:
 
     def draw(self, surface):
         pygame.draw.rect(surface, GREEN, self.rect)
-        draw_text(self.text, font, BLUE, surface, self.rect.centerx, self.rect.centery)
+        draw_text(self.text, menu_font, BLUE, surface, self.rect.centerx, self.rect.centery)
         pygame.display.flip()
 
     def is_clicked(self, mouse_pos):
