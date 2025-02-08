@@ -1,5 +1,6 @@
 import sys
 import time
+
 from physics import *
 
 pygame.init()
@@ -35,40 +36,35 @@ camera2 = Camera(car2.position.x, car2.position.y)
 player1_pov = pygame.Rect(0, 0, SPLIT_WIDTH, SCREEN_HEIGHT)
 player2_pov = pygame.Rect(SPLIT_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
-play_button = Button(SPLIT_WIDTH, 360, 200, 100, 'Play')
+play_button = Button(SCREEN_WIDTH // 2 - 150 // 2, SCREEN_HEIGHT // 2 - 70, 150, 70, 'Play')
 
 current_state = 1
 
 def run_countdown():
     for i in range(3, 0, -1):
-        screen.fill(WHITE)
-        draw_text(str(i), font, BLUE, screen, 400, 300)
+        screen.fill(GRAY)
+        draw_text(str(i), font,  GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         time.sleep(1)
 
-    screen.fill(WHITE)
-    draw_text("Go!", font, BLUE, screen, 400, 300)
+    screen.fill(GRAY)
+    draw_text("Go!", font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
     pygame.display.update()
     time.sleep(1)
 
 while True:
-    screen.fill(BLACK)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            print('nema pa')
             if current_state == MENU and play_button.is_clicked(event.pos):
                 current_state = COUNTDOWN  # Switch to countdown state
 
     if current_state == MENU:
-        print('kuR')
+        screen.fill(GRAY)
         play_button.draw(screen)
-        rect = pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 150, 80)
-        pygame.draw.rect(screen, GREEN, rect)
-        pygame.display.flip()
     elif current_state == COUNTDOWN:
         # Run the countdown and then proceed to the game
         run_countdown()
@@ -80,7 +76,7 @@ while True:
         camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
         camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
 
-        screen.fill(BLACK)
+        #screen.fill(BLACK)
 
         track.draw(screen, camera1.position, player1_pov)
         car1.draw(screen, camera1.position, player1_pov)
