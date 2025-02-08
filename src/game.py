@@ -1,23 +1,15 @@
 import sys
+import time
 from physics import *
 
 pygame.init()
+from utils import *
 
-icon = pygame.image.load(WINDOW_ICON_PATH)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_icon(icon)
-pygame.display.set_caption("TurboNafta 3D")
-#car_images = [pygame.image.load(os.path.join(CAR_IMAGES_PATH, img)) for img in os.listdir(CAR_IMAGES_PATH)]
+pygame.display.set_caption(GAME_NAME)
 
 clock = pygame.time.Clock()
-font = pygame.font.Font('freesansbold.ttf', 32)
-text1 = font.render('Player1', True, GRAY)
-text2 = font.render('Player2', True, GRAY)
-
-textRect1 = text1.get_rect()
-textRect2 = text2.get_rect()
-textRect1.center = (100, 50)
-textRect2.center = (SCREEN_WIDTH // 2 + 100, 50)
 
 car1 = Car(300, 300, RED, {
     'up': pygame.K_w,
@@ -43,31 +35,64 @@ camera2 = Camera(car2.position.x, car2.position.y)
 player1_pov = pygame.Rect(0, 0, SPLIT_WIDTH, SCREEN_HEIGHT)
 player2_pov = pygame.Rect(SPLIT_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
+play_button = Button(SPLIT_WIDTH, 360, 200, 100, 'Play')
+
+current_state = 1
+
+def run_countdown():
+    for i in range(3, 0, -1):
+        screen.fill(WHITE)
+        draw_text(str(i), font, BLUE, screen, 400, 300)
+        pygame.display.update()
+        time.sleep(1)
+
+    screen.fill(WHITE)
+    draw_text("Go!", font, BLUE, screen, 400, 300)
+    pygame.display.update()
+    time.sleep(1)
+
 while True:
+    screen.fill(BLACK)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
-    car1.update(track.outer_bounds)
-    car2.update(track.outer_bounds)
-    car1.check_collision(car2)
-    camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
-    camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            print('nema pa')
+            if current_state == MENU and play_button.is_clicked(event.pos):
+                current_state = COUNTDOWN  # Switch to countdown state
 
-    screen.fill(BLACK)
+    if current_state == MENU:
+        print('kuR')
+        play_button.draw(screen)
+        rect = pygame.Rect(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, 150, 80)
+        pygame.draw.rect(screen, GREEN, rect)
+        pygame.display.flip()
+    elif current_state == COUNTDOWN:
+        # Run the countdown and then proceed to the game
+        run_countdown()
+        current_state = GAME  # After countdown, go to the game state
+    elif current_state == GAME:
+        car1.update(track.outer_bounds)
+        car2.update(track.outer_bounds)
+        car1.check_collision(car2)
+        camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
+        camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
 
-    track.draw(screen, camera1.position, player1_pov)
-    car1.draw(screen, camera1.position, player1_pov)
-    car2.draw(screen, camera1.position, player1_pov)
+        screen.fill(BLACK)
 
-    track.draw(screen, camera2.position, player2_pov)
-    car1.draw(screen, camera2.position, player2_pov)
-    car2.draw(screen, camera2.position, player2_pov)
-    screen.blit(text1, textRect1)
-    screen.blit(text2, textRect2)
+        track.draw(screen, camera1.position, player1_pov)
+        car1.draw(screen, camera1.position, player1_pov)
+        car2.draw(screen, camera1.position, player1_pov)
 
-    pygame.draw.line(screen, BLACK, (SPLIT_WIDTH, 0), (SPLIT_WIDTH, SCREEN_HEIGHT), 2)
-    pygame.display.flip()
+        track.draw(screen, camera2.position, player2_pov)
+        car1.draw(screen, camera2.position, player2_pov)
+        car2.draw(screen, camera2.position, player2_pov)
+        screen.blit(text1, textRect1)
+        screen.blit(text2, textRect2)
 
-    clock.tick(FPS)
+        pygame.draw.line(screen, BLACK, (SPLIT_WIDTH, 0), (SPLIT_WIDTH, SCREEN_HEIGHT), 2)
+        pygame.display.flip()
+
+        clock.tick(FPS)

@@ -4,6 +4,12 @@ SPLIT_WIDTH = SCREEN_WIDTH // 2
 FPS = 60
 WINDOW_ICON_PATH = '../assets/images/icon.jpg'
 CAR_IMAGES_PATH = '../assets/images/car/'
+GAME_NAME = 'TurboNafta 3D'
+
+# Game states
+MENU = 1
+COUNTDOWN = 2
+GAME = 3
 
 # Colors
 WHITE = (255, 255, 255)
