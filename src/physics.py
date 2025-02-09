@@ -1,6 +1,7 @@
 import math
 import os
 import pygame
+import random
 from constants import *
 
 
@@ -26,6 +27,7 @@ class Vector:
         """Return a vector subtracted by another vector."""
         if isinstance(other, Vector):
             return Vector(self.x - other.x, self.y - other.y)
+
         return Vector(self.x - other, self.y - other)
 
     def __mul__(self, other):
@@ -43,7 +45,7 @@ class Vector:
         return Vector(self.x / other, self.y / other)
 
     def dot(self, other):
-        """Calculate the product of two vector coordinates."""
+        """Calculate the dot product of two vectors."""
         return self.x * other.x + self.y * other.y
 
     def length(self):
@@ -76,8 +78,9 @@ class Car:
         self.angular_velocity = CAR_ANGULAR_VELOCITY
         self.angular_drag = CAR_ANGULAR_DRAG
         self.collision_cooldown = 0
+        self.off_track = False
 
-        self.layers =[]
+        self.layers = []
         car_image_path = CAR_IMAGES_PATH + ('red_car' if color == RED else 'blue_car')
         for img_file in sorted(os.listdir(car_image_path)):
             img = pygame.image.load(os.path.join(car_image_path, img_file))
@@ -157,7 +160,7 @@ class Car:
             if diff.dot(collision_normal) < 0:
                 collision_normal = Vector(-collision_normal.x, -collision_normal.y)
 
-            separation = collision_normal * (min_overlap / 2 + 5)
+            separation = collision_normal * (min_overlap / 2 + 1)  # Add 1 pixel to ensure separation
             self.position = self.position + separation
             other_car.position = other_car.position - separation
 
@@ -167,44 +170,53 @@ class Car:
             self.velocity = bounce_force
             other_car.velocity = bounce_force * -1
 
-            self.collision_cooldown = 0
-            other_car.collision_cooldown = 0
+            self.collision_cooldown = 10
+            other_car.collision_cooldown = 10
 
             return True
 
         return False
 
-    def update(self, track_bounds):
+    def update(self, track_bounds, track):
         """Update car position and movement."""
+        if self.collision_cooldown > 0:
+            self.collision_cooldown -= 1
+
         keys = pygame.key.get_pressed()
+
+        car_pos = (int(self.position.x), int(self.position.y))
+        self.off_track = not track.is_on_track(car_pos)
+
+        # Reduce speed if offtrack
+        speed_multiplier = 0.4 if self.off_track else 1.0
 
         if keys[self.controls['up']]:
             self.acceleration = Vector(
-                math.sin(math.radians(self.rotation)) * CAR_FORWARD_VELOCITY,
-                -math.cos(math.radians(self.rotation)) * CAR_FORWARD_VELOCITY
+                math.sin(math.radians(self.rotation)) * CAR_FORWARD_VELOCITY * speed_multiplier,
+                -math.cos(math.radians(self.rotation)) * CAR_FORWARD_VELOCITY * speed_multiplier
             )
         elif keys[self.controls['down']]:
             self.acceleration = Vector(
-                -math.sin(math.radians(self.rotation)) * CAR_BACKWARD_VELOCITY,
-                math.cos(math.radians(self.rotation)) * CAR_BACKWARD_VELOCITY
+                -math.sin(math.radians(self.rotation)) * CAR_BACKWARD_VELOCITY * speed_multiplier,
+                math.cos(math.radians(self.rotation)) * CAR_BACKWARD_VELOCITY * speed_multiplier
             )
         else:
             self.acceleration = Vector()
 
         is_moving = self.velocity.length() > 0.7
         if keys[self.controls['left']]:
-            if  is_moving:
-                self.angular_velocity -= CAR_FORWARD_VELOCITY
+            if is_moving:
+                self.angular_velocity -= CAR_FORWARD_VELOCITY * speed_multiplier
         if keys[self.controls['right']]:
             if is_moving:
-                self.angular_velocity += CAR_FORWARD_VELOCITY
+                self.angular_velocity += CAR_FORWARD_VELOCITY * speed_multiplier
 
         speed = self.velocity.length()
-        self.velocity = self.velocity * self.drag
+        self.velocity = self.velocity * (self.drag * (0.95 if self.off_track else 1.0))
         self.velocity = self.velocity + self.acceleration
 
-        if speed > self.max_speed:
-            self.velocity = self.velocity * (self.max_speed / speed)
+        if speed > self.max_speed * speed_multiplier:
+            self.velocity = self.velocity * (self.max_speed * speed_multiplier / speed)
 
         old_position = Vector(self.position.x, self.position.y)
         self.position = self.position + self.velocity
@@ -288,35 +300,55 @@ class Track:
         self.width = TRACK_WIDTH
         self.height = TRACK_HEIGHT
         self.outer_bounds = (0, 0, self.width, self.height)
-        #self.checkpoints = []
-        self.checkpoints = [
-            (300, 300),
-            (2700, 300),
-            (2700, 1700),
-            (300, 1700)
-        ]
+        # self.checkpoints = [
+        #     (300, 300),
+        #     (2700, 300),
+        #     (2700, 1700),
+        #     (300, 1700)
+        # ]
+
+        # Load track image
+        track_images_path = "../assets/images/map"
+        track_files = [f for f in os.listdir(track_images_path) if f.endswith(('.png', '.jpg'))]
+        selected_track = random.choice(track_files)
+
+        self.track_image = pygame.image.load(os.path.join(track_images_path, selected_track))
+        self.track_image = pygame.transform.scale(self.track_image, (self.width, self.height))
+
+        self.track_mask = pygame.mask.from_surface(self.track_image)
+
+        self.track_image = self.track_image.convert()
+
+    def is_on_track(self, position):
+        """Check if a position is on the track."""
+        x, y = position
+
+        if not (0 <= x < self.width and 0 <= y < self.height):
+            return False
+
+        try:
+            color = self.track_image.get_at((int(x), int(y)))
+            return abs(color[0] - 128) < 30 and abs(color[1] - 128) < 30 and abs(color[2] - 128) < 30
+        except IndexError:
+            return False
 
     def draw(self, screen, camera_offset, viewport_rect):
-        # """Render track."""
-        # surface = pygame.Surface((viewport_rect.width, viewport_rect.height))
-        # surface.fill(GREEN)
-        # # A map will be rendered later on!!!
-        #
-        # screen.blit(surface, viewport_rect)
+        """Draw the track on the screen."""
+        view_x = int(camera_offset.x)
+        view_y = int(camera_offset.y)
 
-        # Create a surface for this viewport
         viewport_surface = pygame.Surface((viewport_rect.width, viewport_rect.height))
-        viewport_surface.fill(GREEN)  # Draw grass background
 
-        # Draw track on viewport surface
-        track_points = [(x - camera_offset.x, y - camera_offset.y)
-                        for x, y in self.checkpoints]
-        track_points.append(track_points[0])  # Close the loop
-        pygame.draw.lines(viewport_surface, GRAY, False, track_points, 100)
+        source_rect = pygame.Rect(
+            max(0, view_x),
+            max(0, view_y),
+            min(self.width - view_x, viewport_rect.width),
+            min(self.height - view_y, viewport_rect.height)
+        )
 
-        # Draw checkpoints on viewport surface
-        for point in track_points[:-1]:
-            pygame.draw.circle(viewport_surface, WHITE, (int(point[0]), int(point[1])), 10)
+        dest_x = max(0, -view_x)
+        dest_y = max(0, -view_y)
 
-        # Blit the viewport surface onto the main screen at the correct position
+        viewport_surface.blit(self.track_image, (dest_x, dest_y), source_rect)
+
         screen.blit(viewport_surface, viewport_rect)
