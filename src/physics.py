@@ -79,6 +79,7 @@ class Car:
         self.angular_drag = CAR_ANGULAR_DRAG
         self.collision_cooldown = 0
         self.off_track = False
+        self.has_started = False
 
         self.layers = []
         car_image_path = CAR_IMAGES_PATH + ('red_car' if color == RED else 'blue_car')
@@ -186,6 +187,10 @@ class Car:
 
         car_pos = (int(self.position.x), int(self.position.y))
         self.off_track = not track.is_on_track(car_pos)
+        if track.is_on_race_line(self):
+            print('Winner winner chicken dinner!')
+            pass
+            # PLayer is the winner
 
         # Reduce speed if offtrack
         speed_multiplier = 0.4 if self.off_track else 1.0
@@ -300,26 +305,16 @@ class Track:
         self.width = TRACK_WIDTH
         self.height = TRACK_HEIGHT
         self.outer_bounds = (0, 0, self.width, self.height)
-        # self.checkpoints = [
-        #     (300, 300),
-        #     (2700, 300),
-        #     (2700, 1700),
-        #     (300, 1700)
-        # ]
 
-        #track_images_path = "../assets/images/map"
-        #track_files = [f for f in os.listdir(track_images_path) if f.endswith(('.png', '.jpg'))]
-        #selected_track = random.choice(track_files)
+        #track_num = random.randint(0, 3)
+        track_num = 0
 
-        #self.track_image = pygame.image.load(os.path.join(track_images_path, selected_track))
-
-        self.track_image = pygame.image.load('../assets/images/map/track_1.png')
-
+        self.track_image = pygame.image.load(f'../assets/images/map/track_{track_num}.png')
         self.track_image = pygame.transform.scale(self.track_image, (self.width, self.height))
-
-        self.track_mask = pygame.mask.from_surface(self.track_image)
-
         self.track_image = self.track_image.convert()
+
+        self.p1_start = TRACKS[track_num][1] # tuple coordinates
+        self.p2_start = TRACKS[track_num][2] # tuple coordinates
 
     def is_on_track(self, position):
         """Check if a position is on the track."""
@@ -330,10 +325,31 @@ class Track:
 
         try:
             color = self.track_image.get_at((int(x), int(y)))
+            print(color)
             # Track color is around RGB(79, 92, 73)
             return (abs(color[0] - 79) < 15 and
                     abs(color[1] - 92) < 15 and
                     abs(color[2] - 73) < 15)
+        except IndexError:
+            return False
+
+    def is_on_race_line(self, car):
+        """Check if a position is on the race line."""
+        x, y = (int(car.position.x), int(car.position.y))
+
+        if not (0 <= x < self.width and 0 <= y < self.height):
+            return False
+
+        try:
+            color = self.track_image.get_at((int(x), int(y)))
+            # Race line color is RGB(255, 255, 255)
+            if (abs(color[0] - 255) < 15 and
+                    abs(color[1] - 255) < 15 and
+                    abs(color[2] - 255) < 15):
+                if not car.has_started:
+                    car.has_started = True
+                else:
+                    return True
         except IndexError:
             return False
 

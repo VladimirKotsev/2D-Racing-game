@@ -11,22 +11,22 @@ pygame.display.set_caption(GAME_NAME)
 
 clock = pygame.time.Clock()
 
-car1 = Car(300, 300, RED, {
+
+track = Track()
+
+car1 = Car(track.p1_start[0], track.p1_start[1], RED, {
     'up': pygame.K_w,
     'down': pygame.K_s,
     'left': pygame.K_a,
     'right': pygame.K_d
 })
 
-car2 = Car(850, 300, BLUE, {
+car2 = Car(track.p2_start[0], track.p2_start[1], BLUE, {
     'up': pygame.K_KP8 or pygame.K_UP,
     'down': pygame.K_KP5 or pygame.K_DOWN,
     'left': pygame.K_KP4 or pygame.K_LEFT,
     'right': pygame.K_KP6 or pygame.K_RIGHT
 })
-
-#track_img = pygame.image.load('../assets/images/map/Austria.png')
-track = Track()
 
 # Create cameras
 camera1 = Camera(car1.position.x, car1.position.y)
