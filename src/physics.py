@@ -63,7 +63,7 @@ class Vector:
 class Car:
     """Represents a car."""
 
-    def __init__(self, x, y, color, controls):
+    def __init__(self, x, y, angular_velocity, color, controls):
         """Return a new instance of Car."""
         self.position = Vector(x, y)
         self.velocity = Vector()
@@ -75,11 +75,12 @@ class Car:
         self.height = CAR_HEIGHT
         self.max_speed = CAR_MAX_SPEED
         self.drag = CAR_DRAG
-        self.angular_velocity = CAR_ANGULAR_VELOCITY
+        self.angular_velocity = angular_velocity
         self.angular_drag = CAR_ANGULAR_DRAG
         self.collision_cooldown = 0
         self.off_track = False
         self.has_started = False
+        self.is_winner = False
 
         self.layers = []
         car_image_path = CAR_IMAGES_PATH + ('red_car' if color == RED else 'blue_car')
@@ -187,10 +188,7 @@ class Car:
 
         car_pos = (int(self.position.x), int(self.position.y))
         self.off_track = not track.is_on_track(car_pos)
-        if track.is_on_race_line(self):
-            print('Winner winner chicken dinner!')
-            pass
-            # PLayer is the winner
+        self.is_winner = track.is_on_race_line(self)
 
         # Reduce speed if offtrack
         speed_multiplier = 0.4 if self.off_track else 1.0
@@ -296,7 +294,6 @@ class Camera:
         self.position.x += current_x * self.smoothness
         self.position.y += current_y * self.smoothness
 
-# To be continued...
 class Track:
     """Represents a track class."""
 
@@ -315,6 +312,7 @@ class Track:
 
         self.p1_start = TRACKS[track_num][1] # tuple coordinates
         self.p2_start = TRACKS[track_num][2] # tuple coordinates
+        self.angular_velocity = TRACKS[track_num][3]
 
     def is_on_track(self, position):
         """Check if a position is on the track."""
@@ -325,7 +323,6 @@ class Track:
 
         try:
             color = self.track_image.get_at((int(x), int(y)))
-            print(color)
             # Track color is around RGB(79, 92, 73)
             return (abs(color[0] - 79) < 15 and
                     abs(color[1] - 92) < 15 and

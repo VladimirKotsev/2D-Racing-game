@@ -6,22 +6,23 @@ pygame.init()
 from utils import *
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# Fill background with green
+screen.fill((0, 255, 0))
 pygame.display.set_icon(icon)
 pygame.display.set_caption(GAME_NAME)
 
 clock = pygame.time.Clock()
 
-
 track = Track()
 
-car1 = Car(track.p1_start[0], track.p1_start[1], RED, {
+car1 = Car(track.p1_start[0], track.p1_start[1], track.angular_velocity, RED, {
     'up': pygame.K_w,
     'down': pygame.K_s,
     'left': pygame.K_a,
     'right': pygame.K_d
 })
 
-car2 = Car(track.p2_start[0], track.p2_start[1], BLUE, {
+car2 = Car(track.p2_start[0], track.p2_start[1], track.angular_velocity, BLUE, {
     'up': pygame.K_KP8 or pygame.K_UP,
     'down': pygame.K_KP5 or pygame.K_DOWN,
     'left': pygame.K_KP4 or pygame.K_LEFT,
@@ -61,6 +62,22 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if current_state == MENU and play_button.is_clicked(event.pos):
                 current_state = COUNTDOWN  # Switch to countdown state
+            if current_state == END_GAME:
+                current_state = MENU
+                pygame.display.update()
+
+    if car1.is_winner:
+        screen.fill(GRAY)
+        draw_text("Player 1 is the winner!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        pygame.display.update()
+        current_state = END_GAME
+        car1.is_winner = False
+    if car2.is_winner:
+        screen.fill(GRAY)
+        draw_text("Player 2 is the winner!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        pygame.display.update()
+        current_state = END_GAME
+        car2.is_winner = False
 
     if current_state == MENU:
         screen.fill(GRAY)
@@ -75,7 +92,7 @@ while True:
         camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
         camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
 
-        screen.fill(GREEN)
+        #screen.fill(GREEN)
 
         track.draw(screen, camera1.position, player1_pov)
         car1.draw(screen, camera1.position, player1_pov)

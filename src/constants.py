@@ -10,6 +10,7 @@ GAME_NAME = 'TurboNafta 3D'
 MENU = 1
 COUNTDOWN = 2
 GAME = 3
+END_GAME = 4
 
 # Colors
 WHITE = (255, 255, 255)
@@ -41,5 +42,5 @@ TRACK_WIDTH = 3000
 TRACK_HEIGHT = 2000
 TRACK_PATH = '../assets/images/map/'
 TRACKS = [
-    ('1', (820, 160), (820, 210))
+    ('1', (820, 160), (820, 210), 10)
 ]
