@@ -307,12 +307,14 @@ class Track:
         #     (300, 1700)
         # ]
 
-        # Load track image
-        track_images_path = "../assets/images/map"
-        track_files = [f for f in os.listdir(track_images_path) if f.endswith(('.png', '.jpg'))]
-        selected_track = random.choice(track_files)
+        #track_images_path = "../assets/images/map"
+        #track_files = [f for f in os.listdir(track_images_path) if f.endswith(('.png', '.jpg'))]
+        #selected_track = random.choice(track_files)
 
-        self.track_image = pygame.image.load(os.path.join(track_images_path, selected_track))
+        #self.track_image = pygame.image.load(os.path.join(track_images_path, selected_track))
+
+        self.track_image = pygame.image.load('../assets/images/map/track_1.png')
+
         self.track_image = pygame.transform.scale(self.track_image, (self.width, self.height))
 
         self.track_mask = pygame.mask.from_surface(self.track_image)
@@ -328,7 +330,10 @@ class Track:
 
         try:
             color = self.track_image.get_at((int(x), int(y)))
-            return abs(color[0] - 128) < 30 and abs(color[1] - 128) < 30 and abs(color[2] - 128) < 30
+            # Track color is around RGB(79, 92, 73)
+            return (abs(color[0] - 79) < 15 and
+                    abs(color[1] - 92) < 15 and
+                    abs(color[2] - 73) < 15)
         except IndexError:
             return False
 
