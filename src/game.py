@@ -1,5 +1,4 @@
 import sys
-import time
 
 from physics import *
 
@@ -11,6 +10,10 @@ pygame.display.set_icon(icon)
 pygame.display.set_caption(GAME_NAME)
 
 clock = pygame.time.Clock()
+
+background = pygame.image.load(BACKGROUND_IMAGE_PATH).convert()
+background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+background.set_alpha(7)
 
 track = Track()
 
@@ -42,19 +45,18 @@ play_button = Button(
     SCREEN_HEIGHT // 2 - BUTTON_HEIGHT // 2,
     BUTTON_WIDTH,
     BUTTON_HEIGHT,
-    BUTTON_IMAGE_PATH  # Add your button image path here
 )
 
 current_state = 1
 
 def run_countdown():
     for i in range(3, 0, -1):
-        screen.fill(GRAY)
+        screen.blit(background, (0, 0))
         draw_text(str(i), menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         time.sleep(1)
 
-    screen.fill(GRAY)
+    screen.blit(background, (0, 0))
     draw_text("Go!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
     pygame.display.update()
     time.sleep(1)
@@ -88,7 +90,7 @@ while True:
         current_state = END_GAME
 
     if current_state == MENU:
-        screen.fill(GRAY)
+        screen.blit(background, (0, 0))
         play_button.update(mouse_pos)  # Update button hover state
         play_button.draw(screen)
     elif current_state == COUNTDOWN:

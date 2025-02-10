@@ -204,8 +204,8 @@ class Car:
         is_cheating = track.is_cheating(car_pos)
 
         # Reduce speed if offtrack
-        speed_multiplier = 0.4 if self.off_track else 1.0
-        speed_multiplier = 0.15 if is_cheating else 1.0
+        speed_multiplier = CAR_OFFTRACK_SLOWING_INDEX if self.off_track else 1.0
+        speed_multiplier = CAR_OFFTRACK_CHEATING if is_cheating else 1.0
 
         if keys[self.controls['up']]:
             self.acceleration = Vector(
