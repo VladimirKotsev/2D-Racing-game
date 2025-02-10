@@ -5,6 +5,9 @@ FPS = 60
 WINDOW_ICON_PATH = '../assets/images/icon.jpg'
 CAR_IMAGES_PATH = '../assets/images/car/'
 GAME_NAME = 'TurboNafta 3D'
+MENU_FONT = '../assets/fonts/snap_itc.TTF'
+
+# Button
 BUTTON_IMAGE_PATH = '../assets/images/button.png'
 BUTTON_WIDTH = 320
 BUTTON_HEIGHT = 180
@@ -21,7 +24,7 @@ END_GAME = 4
 
 # Colors
 WHITE = (255, 255, 255)
-WHITE_TRANSPARENT = (255, 255, 255, 60)
+TRANSPARENT = (0, 0, 0, 70)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)

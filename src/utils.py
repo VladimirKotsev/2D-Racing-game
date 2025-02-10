@@ -3,7 +3,7 @@ from constants import *
 
 icon = pygame.image.load(WINDOW_ICON_PATH)
 game_font = pygame.font.Font('freesansbold.ttf', 32)
-menu_font = pygame.font.Font('freesansbold.ttf', 144)
+menu_font = pygame.font.Font(MENU_FONT, 144)
 text1 = game_font.render('Player1', True, GRAY)
 text2 = game_font.render('Player2', True, GRAY)
 
@@ -53,7 +53,7 @@ class Button:
 
         hover_surface = pygame.Surface((width, height), pygame.SRCALPHA)
         draw_rounded_rect(hover_surface, pygame.Rect(0, 0, width, height),
-                          WHITE_TRANSPARENT, self.corner_radius)
+                          TRANSPARENT, self.corner_radius)
 
         self.hover_image = self.image.copy()
         self.hover_image.blit(hover_surface, (0, 0))

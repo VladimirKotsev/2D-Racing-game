@@ -13,7 +13,7 @@ clock = pygame.time.Clock()
 
 background = pygame.image.load(BACKGROUND_IMAGE_PATH).convert()
 background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-background.set_alpha(7)
+background.set_alpha(10)
 
 track = Track()
 
@@ -50,12 +50,15 @@ play_button = Button(
 current_state = 1
 
 def run_countdown():
+    """Countdown start of game."""
     for i in range(3, 0, -1):
+        screen.fill(GRAY)
         screen.blit(background, (0, 0))
         draw_text(str(i), menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         time.sleep(1)
 
+    screen.fill(GRAY)
     screen.blit(background, (0, 0))
     draw_text("Go!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
     pygame.display.update()
@@ -80,12 +83,14 @@ while True:
 
     if car1.is_winner:
         screen.fill(GRAY)
-        draw_text("Player 1 is the winner!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        screen.blit(background, (0, 0))
+        draw_text("Player 1 is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         current_state = END_GAME
     if car2.is_winner:
         screen.fill(GRAY)
-        draw_text("Player 2 is the winner!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        screen.blit(background, (0, 0))
+        draw_text("Player 2 is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         current_state = END_GAME
 
