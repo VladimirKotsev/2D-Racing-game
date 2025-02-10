@@ -1,5 +1,6 @@
 import sys
 import time
+
 from physics import *
 
 pygame.init()
@@ -37,12 +38,11 @@ player2_pov = pygame.Rect(SPLIT_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 # Create button with image
 play_button = Button(
-    SCREEN_WIDTH // 2 - 320 // 2,
-    SCREEN_HEIGHT // 2 - 180 // 2,
-    320,
-    180,
-    '',
-    '../assets/images/button.png'
+    SCREEN_WIDTH // 2 - BUTTON_WIDTH // 2,
+    SCREEN_HEIGHT // 2 - BUTTON_HEIGHT // 2,
+    BUTTON_WIDTH,
+    BUTTON_HEIGHT,
+    BUTTON_IMAGE_PATH  # Add your button image path here
 )
 
 current_state = 1

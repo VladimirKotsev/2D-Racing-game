@@ -1,6 +1,7 @@
 import math
 import os
 import pygame
+import time
 import random
 from constants import *
 
@@ -81,6 +82,7 @@ class Car:
         self.off_track = False
         self.has_started = False
         self.is_winner = False
+        self.time_start = 0
 
         self.layers = []
         car_image_path = CAR_IMAGES_PATH + ('red_car' if color == RED else 'blue_car')
@@ -97,6 +99,7 @@ class Car:
         self.velocity = Vector()
         self.angular_velocity = angular_velocity
         self.rotation = CAR_ROTATION
+        self.time_start = 0
 
     def get_corners(self):
         """Get the rotated corners of the car."""
@@ -305,6 +308,7 @@ class Camera:
         self.position.x += current_x * self.smoothness
         self.position.y += current_y * self.smoothness
 
+
 class Track:
     """Represents a track class."""
 
@@ -350,11 +354,13 @@ class Track:
 
         try:
             color = self.track_image.get_at((int(x), int(y)))
-            print(color)
             # Track color is around RGB(79, 92, 73)
-            return (abs(color[0] - 79) < 15 and
+            return ((abs(color[0] - 79) < 15 and
                     abs(color[1] - 92) < 15 and
-                    abs(color[2] - 73) < 15)
+                    abs(color[2] - 73) < 15) or
+                    (abs(color[0] - 255) < 15 and
+                    abs(color[1] - 255) < 15 and
+                    abs(color[2] - 255) < 15))
         except IndexError:
             return False
 
@@ -372,9 +378,14 @@ class Track:
                     abs(color[1] - 255) < 15 and
                     abs(color[2] - 255) < 15):
                 if not car.has_started:
+                    # print(car.time_after_start)
                     car.has_started = True
-                else:
+                    car.time_start = time.time()  # Start the timer
+                    return False
+                elif car.has_started and int(time.time() - car.time_start) >= CAR_MINIMUM_AFTER_START:
                     return True
+                else:
+                    return False
         except IndexError:
             return False
 

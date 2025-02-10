@@ -5,6 +5,12 @@ FPS = 60
 WINDOW_ICON_PATH = '../assets/images/icon.jpg'
 CAR_IMAGES_PATH = '../assets/images/car/'
 GAME_NAME = 'TurboNafta 3D'
+BUTTON_IMAGE_PATH = '../assets/images/button.png'
+BUTTON_WIDTH = 320
+BUTTON_HEIGHT = 180
+BUTTON_X = SCREEN_WIDTH // 2 - BUTTON_WIDTH // 2,
+BUTTON_Y = SCREEN_HEIGHT // 2 - BUTTON_HEIGHT // 2,
+
 
 # Game states
 MENU = 1
@@ -34,6 +40,7 @@ CAR_SPRITESTACK_ENLARGE = 3
 CAR_LAYER_SPREAD = 3
 CAR_COLLISION_BOUNCE = 0.5
 CAR_TURN_LIMITER = 0.5
+CAR_MINIMUM_AFTER_START = 10
 
 # Camera constants
 CAMERA_SMOOTHNESS = 1.5

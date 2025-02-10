@@ -20,53 +20,33 @@ def draw_text(text, font, color, surface, x, y):
 
 
 class Button:
-    def __init__(self, x, y, width, height, text, image_path=None):
+    def __init__(self, x, y, width, height, image_path=None):
         self.rect = pygame.Rect(x, y, width, height)
-        self.text = text
         self.image = None
         self.hover_image = None
 
-        if image_path:
-            # Load the normal and hover images
-            try:
-                # Load and scale the original image
-                original_image = pygame.image.load(image_path)
-                self.image = pygame.transform.scale(original_image, (width, height))
+        # Load the normal and hover images
+        # Load and scale the original image
+        original_image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(original_image, (width, height))
 
-                # Create a slightly brighter version for hover effect
-                hover_image = original_image.copy()
-                hover_surface = pygame.Surface((width, height), pygame.SRCALPHA)
-                hover_surface.fill((255, 255, 255, 50))  # Semi-transparent white
-                hover_image.blit(hover_surface, (0, 0))
-                self.hover_image = pygame.transform.scale(hover_image, (width, height))
-            except pygame.error:
-                print(f"Could not load button image: {image_path}")
-                self.image = None
-                self.hover_image = None
+        # Create a slightly brighter version for hover effect
+        hover_image = self.image.copy()
+        hover_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        hover_surface.fill((255, 255, 255, 80))  # Semi-transparent white
+        hover_image.blit(hover_surface, (0, 0))
+        self.hover_image = pygame.transform.scale(hover_image, (width, height))
 
         self.is_hovered = False
 
-    def draw(self, surface):
-        if self.image:
-            # Draw the appropriate image based on hover state
-            current_image = self.hover_image if self.is_hovered else self.image
-            surface.blit(current_image, self.rect)
 
-            # Draw text on top of the image if needed
-            if self.text:
-                draw_text(self.text, menu_font, BLUE, surface,
-                          self.rect.centerx, self.rect.centery)
-        else:
-            # Fallback to original rectangle drawing if image loading failed
-            pygame.draw.rect(surface, GREEN, self.rect)
-            if self.text:
-                draw_text(self.text, menu_font, BLUE, surface,
-                          self.rect.centerx, self.rect.centery)
+    def draw(self, surface):
+        current_image = self.hover_image if self.is_hovered else self.image
+        surface.blit(current_image, self.rect)
 
         pygame.display.flip()
 
     def update(self, mouse_pos):
-        # Update hover state
         self.is_hovered = self.rect.collidepoint(mouse_pos)
 
     def is_clicked(self, mouse_pos):
