@@ -89,6 +89,14 @@ class Car:
             enlargen_img = pygame.transform.scale_by(img, (CAR_SPRITESTACK_ENLARGE, CAR_SPRITESTACK_ENLARGE))
             self.layers.append(enlargen_img)
 
+    def play_again(self, x, y, angular_velocity):
+        self.off_track = False
+        self.has_started = False
+        self.is_winner = False
+        self.position = Vector(x, y)
+        self.velocity = Vector()
+        self.angular_velocity = angular_velocity
+
     def get_corners(self):
         """Get the rotated corners of the car."""
         half_width = self.width / 2
@@ -162,7 +170,7 @@ class Car:
             if diff.dot(collision_normal) < 0:
                 collision_normal = Vector(-collision_normal.x, -collision_normal.y)
 
-            separation = collision_normal * (min_overlap / 2 + 1)  # Add 1 pixel to ensure separation
+            separation = collision_normal * (min_overlap / 2 + 1)
             self.position = self.position + separation
             other_car.position = other_car.position - separation
 
@@ -189,9 +197,11 @@ class Car:
         car_pos = (int(self.position.x), int(self.position.y))
         self.off_track = not track.is_on_track(car_pos)
         self.is_winner = track.is_on_race_line(self)
+        is_cheating = track.is_cheating(car_pos)
 
         # Reduce speed if offtrack
         speed_multiplier = 0.4 if self.off_track else 1.0
+        speed_multiplier = 0.2 if is_cheating else 1.0
 
         if keys[self.controls['up']]:
             self.acceleration = Vector(
@@ -206,7 +216,7 @@ class Car:
         else:
             self.acceleration = Vector()
 
-        is_moving = self.velocity.length() > 0.7
+        is_moving = self.velocity.length() > CAR_TURN_LIMITER
         if keys[self.controls['left']]:
             if is_moving:
                 self.angular_velocity -= CAR_FORWARD_VELOCITY * speed_multiplier
@@ -314,6 +324,22 @@ class Track:
         self.p2_start = TRACKS[track_num][2] # tuple coordinates
         self.angular_velocity = TRACKS[track_num][3]
 
+    def is_cheating(self, position):
+        """Check if a position is out of track and player is trying to cheat."""
+        x, y = position
+
+        if not (0 <= x < self.width and 0 <= y < self.height):
+            return False
+
+        try:
+            color = self.track_image.get_at((int(x), int(y)))
+            # Track color is around RGB(8, 109, 10)
+            return (abs(color[0] - 8) < 9 and
+                    abs(color[1] - 109) < 9 and
+                    abs(color[2] - 10) < 9)
+        except IndexError:
+            return False
+
     def is_on_track(self, position):
         """Check if a position is on the track."""
         x, y = position
@@ -323,6 +349,7 @@ class Track:
 
         try:
             color = self.track_image.get_at((int(x), int(y)))
+            print(color)
             # Track color is around RGB(79, 92, 73)
             return (abs(color[0] - 79) < 15 and
                     abs(color[1] - 92) < 15 and

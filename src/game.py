@@ -6,8 +6,6 @@ pygame.init()
 from utils import *
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-# Fill background with green
-screen.fill((0, 255, 0))
 pygame.display.set_icon(icon)
 pygame.display.set_caption(GAME_NAME)
 
@@ -64,6 +62,8 @@ while True:
                 current_state = COUNTDOWN  # Switch to countdown state
             if current_state == END_GAME:
                 current_state = MENU
+                car1.play_again(track.p1_start[0], track.p1_start[1], track.angular_velocity)
+                car2.play_again(track.p2_start[0], track.p2_start[1], track.angular_velocity)
                 pygame.display.update()
 
     if car1.is_winner:
@@ -71,13 +71,11 @@ while True:
         draw_text("Player 1 is the winner!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         current_state = END_GAME
-        car1.is_winner = False
     if car2.is_winner:
         screen.fill(GRAY)
         draw_text("Player 2 is the winner!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         current_state = END_GAME
-        car2.is_winner = False
 
     if current_state == MENU:
         screen.fill(GRAY)
