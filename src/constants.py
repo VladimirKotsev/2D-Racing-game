@@ -48,7 +48,8 @@ CAMERA_SMOOTHNESS = 1.5
 # Track constants
 TRACK_WIDTH = 3000
 TRACK_HEIGHT = 2000
-TRACK_PATH = '../assets/images/map/'
+TRACK_PATH = '../assets/images/tracks/'
 TRACKS = [
-    ('1', (820, 175), (820, 225), 10)
+    ('0', (820, 175), (820, 225), 10),
+    ('1', (790, 375), (790, 415), 11)
 ]

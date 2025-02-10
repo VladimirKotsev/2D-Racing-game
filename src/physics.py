@@ -319,9 +319,11 @@ class Track:
         self.outer_bounds = (0, 0, self.width, self.height)
 
         #track_num = random.randint(0, 3)
-        track_num = 0
+        track_num = 1
 
-        self.track_image = pygame.image.load(f'../assets/images/map/track_{track_num}.png')
+
+        self.track_image = pygame.image.load(TRACK_PATH + f'track_{track_num}.png')
+        #self.track_image = pygame.image.load(f'../assets/images/map/track_{track_num}.png')
         self.track_image = pygame.transform.scale(self.track_image, (self.width, self.height))
         self.track_image = self.track_image.convert()
 
@@ -378,7 +380,6 @@ class Track:
                     abs(color[1] - 255) < 15 and
                     abs(color[2] - 255) < 15):
                 if not car.has_started:
-                    # print(car.time_after_start)
                     car.has_started = True
                     car.time_start = time.time()  # Start the timer
                     return False
