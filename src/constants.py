@@ -43,5 +43,5 @@ TRACK_WIDTH = 3000
 TRACK_HEIGHT = 2000
 TRACK_PATH = '../assets/images/map/'
 TRACKS = [
-    ('1', (820, 160), (820, 210), 10)
+    ('1', (820, 175), (820, 225), 10)
 ]

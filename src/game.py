@@ -90,8 +90,6 @@ while True:
         camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
         camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
 
-        #screen.fill(GREEN)
-
         track.draw(screen, camera1.position, player1_pov)
         car1.draw(screen, camera1.position, player1_pov)
         car2.draw(screen, camera1.position, player1_pov)

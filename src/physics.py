@@ -96,6 +96,7 @@ class Car:
         self.position = Vector(x, y)
         self.velocity = Vector()
         self.angular_velocity = angular_velocity
+        self.rotation = CAR_ROTATION
 
     def get_corners(self):
         """Get the rotated corners of the car."""
@@ -201,7 +202,7 @@ class Car:
 
         # Reduce speed if offtrack
         speed_multiplier = 0.4 if self.off_track else 1.0
-        speed_multiplier = 0.2 if is_cheating else 1.0
+        speed_multiplier = 0.15 if is_cheating else 1.0
 
         if keys[self.controls['up']]:
             self.acceleration = Vector(
