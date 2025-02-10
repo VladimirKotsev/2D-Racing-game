@@ -1,7 +1,7 @@
 import sys
 import time
-
 from physics import *
+
 pygame.init()
 from utils import *
 
@@ -35,14 +35,22 @@ camera2 = Camera(car2.position.x, car2.position.y)
 player1_pov = pygame.Rect(0, 0, SPLIT_WIDTH, SCREEN_HEIGHT)
 player2_pov = pygame.Rect(SPLIT_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
-play_button = Button(SCREEN_WIDTH // 2 - 180 // 2, SCREEN_HEIGHT // 2 - 90 // 2, 180, 90, 'Play')
+# Create button with image
+play_button = Button(
+    SCREEN_WIDTH // 2 - 320 // 2,
+    SCREEN_HEIGHT // 2 - 180 // 2,
+    320,
+    180,
+    '',
+    '../assets/images/button.png'
+)
 
 current_state = 1
 
 def run_countdown():
     for i in range(3, 0, -1):
         screen.fill(GRAY)
-        draw_text(str(i), menu_font,  GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        draw_text(str(i), menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         time.sleep(1)
 
@@ -52,6 +60,8 @@ def run_countdown():
     time.sleep(1)
 
 while True:
+    mouse_pos = pygame.mouse.get_pos()  # Get current mouse position
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -79,6 +89,7 @@ while True:
 
     if current_state == MENU:
         screen.fill(GRAY)
+        play_button.update(mouse_pos)  # Update button hover state
         play_button.draw(screen)
     elif current_state == COUNTDOWN:
         run_countdown()
