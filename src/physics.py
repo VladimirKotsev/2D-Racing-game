@@ -318,12 +318,10 @@ class Track:
         self.height = TRACK_HEIGHT
         self.outer_bounds = (0, 0, self.width, self.height)
 
-        #track_num = random.randint(0, 3)
-        track_num = 1
-
+        track_num = random.randint(0, 2)
+        #track_num = 2
 
         self.track_image = pygame.image.load(TRACK_PATH + f'track_{track_num}.png')
-        #self.track_image = pygame.image.load(f'../assets/images/map/track_{track_num}.png')
         self.track_image = pygame.transform.scale(self.track_image, (self.width, self.height))
         self.track_image = self.track_image.convert()
 
