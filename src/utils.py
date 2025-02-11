@@ -1,4 +1,5 @@
 import pygame
+
 from constants import *
 
 icon = pygame.image.load(WINDOW_ICON_PATH)
@@ -29,6 +30,45 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
     surface.blit(rect_surface, rect)
     return rect_surface
 
+
+class TextInput:
+    """Represents a text field for player nickname."""
+    def __init__(self, x, placeholder):
+        """Create a new instance of TextInput."""
+        self.rect = pygame.Rect(x, INPUT_Y, INPUT_WIDTH, INPUT_HEIGHT)
+        self.text = ""
+        self.placeholder = placeholder
+        self.active = False
+        self.corner_radius = INPUT_BORDER_RADIUS
+        self.font = pygame.font.Font(MENU_FONT, 32)
+        self.max_chars = INPUT_MAX_CHARACTERS
+
+    def __str__(self):
+        """Return the player nickname."""
+        return str(self.text)
+
+    def handle_event(self, event):
+        """Handle event for input field."""
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            self.active = self.rect.collidepoint(event.pos)
+        elif event.type == pygame.KEYDOWN and self.active:
+            if event.key == pygame.K_BACKSPACE:
+                self.text = self.text[:-1]
+            elif len(self.text) < self.max_chars and event.unicode.isprintable():
+                self.text += event.unicode
+
+    def draw(self, surface):
+        """Draw input fields to screen."""
+        color = (200, 200, 200) if self.active else (180, 180, 180)
+        draw_rounded_rect(surface, self.rect, color, self.corner_radius)
+
+        if self.text:
+            text_surface = self.font.render(self.text, True, (0, 0, 0))
+        else:
+            text_surface = self.font.render(self.placeholder, True, (128, 128, 128))
+
+        text_rect = text_surface.get_rect(center=self.rect.center)
+        surface.blit(text_surface, text_rect)
 
 class Button:
     """Represent a clickable button."""

@@ -16,6 +16,21 @@ BUTTON_Y = SCREEN_HEIGHT // 2 - BUTTON_HEIGHT // 2
 BACKGROUND_IMAGE_PATH = '../assets/images/background.png'
 BUTTON_BORDER_RADIUS = 30
 
+# Input
+INPUT_WIDTH = 300
+INPUT_HEIGHT = 50
+INPUT1_X = SCREEN_WIDTH // 2 - INPUT_WIDTH - 20
+INPUT2_X = SCREEN_WIDTH // 2 + 20
+INPUT_Y = SCREEN_HEIGHT // 2 - 170
+INPUT1_PLACEHOLDER = "Player 1"
+INPUT2_PLACEHOLDER = "Player 2"
+INPUT_BORDER_RADIUS = 5
+INPUT_MAX_CHARACTERS = 12
+
+input_width = 300
+input_height = 50
+input_y_pos = SCREEN_HEIGHT // 2 - 120  # Position above the play button
+
 # Game states
 MENU = 1
 COUNTDOWN = 2

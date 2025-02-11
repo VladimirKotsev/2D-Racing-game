@@ -15,6 +15,16 @@ background = pygame.image.load(BACKGROUND_IMAGE_PATH).convert()
 background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 background.set_alpha(10)
 
+player1_input = TextInput(
+    INPUT1_X,
+    INPUT1_PLACEHOLDER
+)
+
+player2_input = TextInput(
+    INPUT2_X,
+    INPUT2_PLACEHOLDER
+)
+
 track = Track()
 
 car1 = Car(track.p1_start[0], track.p1_start[1], track.angular_velocity, RED, {
@@ -72,6 +82,9 @@ while True:
             pygame.quit()
             sys.exit()
 
+        if current_state == MENU:
+            player1_input.handle_event(event)
+            player2_input.handle_event(event)
         if event.type == pygame.MOUSEBUTTONDOWN:
             if current_state == MENU and play_button.is_clicked(event.pos):
                 current_state = COUNTDOWN  # Switch to countdown state
@@ -84,18 +97,20 @@ while True:
     if car1.is_winner:
         screen.fill(GRAY)
         screen.blit(background, (0, 0))
-        draw_text("Player 1 is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        draw_text(f"{str(player1_input)} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         current_state = END_GAME
     if car2.is_winner:
         screen.fill(GRAY)
         screen.blit(background, (0, 0))
-        draw_text("Player 2 is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        draw_text(f"{str(player2_input)} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
         current_state = END_GAME
 
     if current_state == MENU:
         screen.blit(background, (0, 0))
+        player1_input.draw(screen)
+        player2_input.draw(screen)
         play_button.update(mouse_pos)  # Update button hover state
         play_button.draw(screen)
     elif current_state == COUNTDOWN:
@@ -107,6 +122,9 @@ while True:
         car1.check_collision(car2)
         camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
         camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
+
+        print(str(player1_input))
+        print(str(player2_input))
 
         track.draw(screen, camera1.position, player1_pov)
         car1.draw(screen, camera1.position, player1_pov)
