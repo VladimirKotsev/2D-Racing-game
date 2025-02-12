@@ -3,15 +3,9 @@ import pygame
 from constants import *
 
 icon = pygame.image.load(WINDOW_ICON_PATH)
-game_font = pygame.font.Font('freesansbold.ttf', 32)
+game_font = pygame.font.Font(MAIN_FONT, 32)
 menu_font = pygame.font.Font(MENU_FONT, 144)
-text1 = game_font.render('Player1', True, GRAY)
-text2 = game_font.render('Player2', True, GRAY)
-
-textRect1 = text1.get_rect()
-textRect2 = text2.get_rect()
-textRect1.center = (100, 50)
-textRect2.center = (SCREEN_WIDTH // 2 + 100, 50)
+winner_font = pygame.font.Font(MAIN_FONT, 82)
 
 def draw_text(text, font, color, surface, x, y):
     """Draw text on screen."""

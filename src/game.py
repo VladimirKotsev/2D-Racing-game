@@ -1,12 +1,12 @@
 import sys
+import pygame
 
-from physics import *
-
-# Display player's name while playing
+from physics import Track, Car, Player
+from constants import *
 
 pygame.init()
 from menu import Menu
-from utils import *
+from utils import icon, draw_text, game_font
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_icon(icon)
@@ -83,8 +83,8 @@ while True:
         track.draw(screen, player2.camera.position, player2_pov)
         player2.draw(screen, car1)
 
-        screen.blit(text1, textRect1)
-        screen.blit(text2, textRect2)
+        draw_text(f"{str(player1)}", game_font, GRAY, screen, *GAME_NAME_1_POS)
+        draw_text(f"{str(player2)}", game_font, GRAY, screen, *GAME_NAME_2_POS)
 
         pygame.draw.line(screen, BLACK, (SPLIT_WIDTH, 0), (SPLIT_WIDTH, SCREEN_HEIGHT), 2)
         pygame.display.flip()

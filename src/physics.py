@@ -428,15 +428,16 @@ class Player:
 
     @property
     def nickname(self):
-        """Getter for nickname"""
+        """Getter for nickname."""
         return self._nickname
 
     @nickname.setter
     def nickname(self, new_nickname):
-        """Setter for nickname"""
+        """Setter for nickname."""
         self._nickname = new_nickname
 
     def is_winner(self):
+        """Return if player is winner."""
         return self.car.has_finished
 
     def update(self, track):
@@ -454,4 +455,5 @@ class Player:
         self.car.check_collision(other_player.car)
 
     def rematch(self):
+        """Rematch players."""
         self.car.rematch()

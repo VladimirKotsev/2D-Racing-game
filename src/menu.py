@@ -8,6 +8,7 @@ class Menu:
     _instance = None
 
     def __new__(cls):
+        """Create a unique instance of Menu"""
         if cls._instance is None:
             cls._instance = super(Menu, cls).__new__(cls)
             cls._instance._initialize()
@@ -30,15 +31,17 @@ class Menu:
         )
 
     def handle_events(self, event):
-            self.player1_input.handle_event(event)
-            self.player2_input.handle_event(event)
+        """Handle events for button and textbox."""
+        self.player1_input.handle_event(event)
+        self.player2_input.handle_event(event)
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.play_button.is_clicked(event.pos):
-                    return True
-            return False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.play_button.is_clicked(event.pos):
+                return True
+        return False
 
     def display_winner(self, screen, player):
+        """Draw winner on screen."""
         screen.fill(GRAY)
         screen.blit(self.background, (0, 0))
         draw_text(f"{str(player)} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
@@ -49,6 +52,7 @@ class Menu:
         self.play_button.update(mouse_pos)
 
     def draw(self, screen):
+        """Draw menu on screen."""
         screen.blit(self.background, (0, 0))
         self.player1_input.draw(screen)
         self.player2_input.draw(screen)

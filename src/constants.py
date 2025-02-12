@@ -6,6 +6,9 @@ WINDOW_ICON_PATH = '../assets/images/icon.jpg'
 CAR_IMAGES_PATH = '../assets/images/car/'
 GAME_NAME = 'TurboNafta 3D'
 MENU_FONT = '../assets/fonts/snap_itc.TTF'
+MAIN_FONT = 'freesansbold.ttf'
+GAME_NAME_1_POS = (100, 50)
+GAME_NAME_2_POS = (SCREEN_WIDTH // 2 + 100, 50)
 
 # Button
 BUTTON_IMAGE_PATH = '../assets/images/button.png'
