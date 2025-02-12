@@ -38,10 +38,10 @@ class Menu:
                     return True
             return False
 
-    def display_winner(self, screen, background, player):
+    def display_winner(self, screen, player):
         screen.fill(GRAY)
-        screen.blit(background, (0, 0))
-        draw_text(f"{player} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        screen.blit(self.background, (0, 0))
+        draw_text(f"{str(player)} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         pygame.display.update()
 
     def update(self, mouse_pos):

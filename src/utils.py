@@ -1,5 +1,4 @@
 import pygame
-import time
 
 from constants import *
 
@@ -20,21 +19,6 @@ def draw_text(text, font, color, surface, x, y):
     text_rect = text_obj.get_rect(center=(x, y))
     surface.blit(text_obj, text_rect)
 
-def run_countdown(screen, background):
-    """Countdown start of game."""
-    for i in range(3, 0, -1):
-        screen.fill(GRAY)
-        screen.blit(background, (0, 0))
-        draw_text(str(i), menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        pygame.display.update()
-        time.sleep(1)
-
-    screen.fill(GRAY)
-    screen.blit(background, (0, 0))
-    draw_text("Go!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-    pygame.display.update()
-    time.sleep(1)
-
 def draw_rounded_rect(surface, rect, color, corner_radius):
     """Draw a rectangle with rounded corners"""
     if corner_radius < 0:
@@ -45,12 +29,6 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
     pygame.draw.rect(rect_surface, color, (0, 0, rect.width, rect.height), border_radius=corner_radius)
     surface.blit(rect_surface, rect)
     return rect_surface
-
-def display_winner(screen, background, player):
-    screen.fill(GRAY)
-    screen.blit(background, (0, 0))
-    draw_text(f"{player} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-    pygame.display.update()
 
 
 class TextInput:
@@ -67,7 +45,7 @@ class TextInput:
 
     def __str__(self):
         """Return the player nickname."""
-        return str(self.text)
+        return str(self.text) if self.text else 'Player 1'
 
     def handle_event(self, event):
         """Handle event for input field."""

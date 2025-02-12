@@ -426,6 +426,16 @@ class Player:
         """Return player's nickname."""
         return str(self.nickname)
 
+    @property
+    def nickname(self):
+        """Getter for nickname"""
+        return self._nickname
+
+    @nickname.setter
+    def nickname(self, new_nickname):
+        """Setter for nickname"""
+        self._nickname = new_nickname
+
     def is_winner(self):
         return self.car.has_finished
 
