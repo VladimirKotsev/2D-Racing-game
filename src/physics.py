@@ -420,11 +420,16 @@ class Player:
         self.camera = Camera(car.position.x, car.position.y)
         self.player_pov = player_pov
 
-    def update(self):
-        pass
+    def update(self, track):
+        """Update player's car and camera."""
+        self.car.update(track.outer_bounds, track)
+        self.camera.update(self.car.position.x - SPLIT_WIDTH / 2, self.car.position.y - SCREEN_HEIGHT / 2)
+
+    def draw(self, screen, other_car):
+        """Draw to player cars to screen."""
+        self.car.draw(screen, self.camera.position, self.player_pov)
+        other_car.draw(screen, self.camera.position, self.player_pov)
 
     def check_collision(self, other_player):
-        pass
-
-    def draw(self):
-        pass
+        """Check for collision between two players."""
+        self.car.check_collision(other_player.car)

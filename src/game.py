@@ -2,7 +2,6 @@ import sys
 
 from physics import *
 
-# Create player entity!
 # Display player's name while playing
 
 pygame.init()
@@ -51,6 +50,9 @@ camera2 = Camera(car2.position.x, car2.position.y)
 player1_pov = pygame.Rect(0, 0, SPLIT_WIDTH, SCREEN_HEIGHT)
 player2_pov = pygame.Rect(SPLIT_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
+player1 = Player(player1_input, car1, player1_pov)
+player2 = Player(player2_input, car2, player2_pov)
+
 # Create button with image
 play_button = Button(
     SCREEN_WIDTH // 2 - BUTTON_WIDTH // 2,
@@ -98,25 +100,21 @@ while True:
         screen.blit(background, (0, 0))
         player1_input.draw(screen)
         player2_input.draw(screen)
-        play_button.update(mouse_pos)  # Update button hover state
+        play_button.update(mouse_pos)
         play_button.draw(screen)
     elif current_state == COUNTDOWN:
         run_countdown(screen, background)
         current_state = GAME
     elif current_state == GAME:
-        car1.check_collision(car2)
+        player1.check_collision(player2)
 
-        car1.update(track.outer_bounds, track)
-        car2.update(track.outer_bounds, track)
-        camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
-        camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
+        player1.update(track)
+        player2.update(track)
 
-        track.draw(screen, camera1.position, player1_pov)
-        car1.draw(screen, camera1.position, player1_pov)
-        car2.draw(screen, camera1.position, player1_pov)
-        track.draw(screen, camera2.position, player2_pov)
-        car1.draw(screen, camera2.position, player2_pov)
-        car2.draw(screen, camera2.position, player2_pov)
+        track.draw(screen, player1.camera.position, player1_pov)
+        player1.draw(screen, car2)
+        track.draw(screen, player2.camera.position, player2_pov)
+        player2.draw(screen, car1)
 
         screen.blit(text1, textRect1)
         screen.blit(text2, textRect2)
