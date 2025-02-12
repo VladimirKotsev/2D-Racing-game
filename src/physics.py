@@ -408,3 +408,23 @@ class Track:
         viewport_surface.blit(self.track_image, (dest_x, dest_y), source_rect)
 
         screen.blit(viewport_surface, viewport_rect)
+
+
+class Player:
+    """Represents a game player."""
+
+    def __init__(self, nickname, car, player_pov):
+        """Create a new instance of Player."""
+        self.nickname = nickname
+        self.car = car
+        self.camera = Camera(car.position.x, car.position.y)
+        self.player_pov = player_pov
+
+    def update(self):
+        pass
+
+    def check_collision(self, other_player):
+        pass
+
+    def draw(self):
+        pass

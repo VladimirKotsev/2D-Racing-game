@@ -1,4 +1,5 @@
 import pygame
+import time
 
 from constants import *
 
@@ -18,6 +19,21 @@ def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
     text_rect = text_obj.get_rect(center=(x, y))
     surface.blit(text_obj, text_rect)
+
+def run_countdown(screen, background):
+    """Countdown start of game."""
+    for i in range(3, 0, -1):
+        screen.fill(GRAY)
+        screen.blit(background, (0, 0))
+        draw_text(str(i), menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        pygame.display.update()
+        time.sleep(1)
+
+    screen.fill(GRAY)
+    screen.blit(background, (0, 0))
+    draw_text("Go!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    pygame.display.update()
+    time.sleep(1)
 
 def draw_rounded_rect(surface, rect, color, corner_radius):
     """Draw a rectangle with rounded corners"""
@@ -59,13 +75,13 @@ class TextInput:
 
     def draw(self, surface):
         """Draw input fields to screen."""
-        color = (200, 200, 200) if self.active else (180, 180, 180)
+        color = (163, 116, 8) if self.active else (224, 175, 61)
         draw_rounded_rect(surface, self.rect, color, self.corner_radius)
 
         if self.text:
-            text_surface = self.font.render(self.text, True, (0, 0, 0))
+            text_surface = self.font.render(self.text, True, BLACK)
         else:
-            text_surface = self.font.render(self.placeholder, True, (128, 128, 128))
+            text_surface = self.font.render(self.placeholder, True, WHITE)
 
         text_rect = text_surface.get_rect(center=self.rect.center)
         surface.blit(text_surface, text_rect)

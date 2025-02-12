@@ -2,6 +2,9 @@ import sys
 
 from physics import *
 
+# Create player entity!
+# Display player's name while playing
+
 pygame.init()
 from utils import *
 
@@ -33,7 +36,6 @@ car1 = Car(track.p1_start[0], track.p1_start[1], track.angular_velocity, RED, {
     'left': pygame.K_a,
     'right': pygame.K_d
 })
-
 car2 = Car(track.p2_start[0], track.p2_start[1], track.angular_velocity, BLUE, {
     'up': pygame.K_KP8 or pygame.K_UP,
     'down': pygame.K_KP5 or pygame.K_DOWN,
@@ -58,21 +60,6 @@ play_button = Button(
 )
 
 current_state = 1
-
-def run_countdown():
-    """Countdown start of game."""
-    for i in range(3, 0, -1):
-        screen.fill(GRAY)
-        screen.blit(background, (0, 0))
-        draw_text(str(i), menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        pygame.display.update()
-        time.sleep(1)
-
-    screen.fill(GRAY)
-    screen.blit(background, (0, 0))
-    draw_text("Go!", menu_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-    pygame.display.update()
-    time.sleep(1)
 
 while True:
     mouse_pos = pygame.mouse.get_pos()  # Get current mouse position
@@ -114,25 +101,23 @@ while True:
         play_button.update(mouse_pos)  # Update button hover state
         play_button.draw(screen)
     elif current_state == COUNTDOWN:
-        run_countdown()
+        run_countdown(screen, background)
         current_state = GAME
     elif current_state == GAME:
+        car1.check_collision(car2)
+
         car1.update(track.outer_bounds, track)
         car2.update(track.outer_bounds, track)
-        car1.check_collision(car2)
         camera1.update(car1.position.x - SPLIT_WIDTH / 2, car1.position.y - SCREEN_HEIGHT / 2)
         camera2.update(car2.position.x - SPLIT_WIDTH / 2, car2.position.y - SCREEN_HEIGHT / 2)
-
-        print(str(player1_input))
-        print(str(player2_input))
 
         track.draw(screen, camera1.position, player1_pov)
         car1.draw(screen, camera1.position, player1_pov)
         car2.draw(screen, camera1.position, player1_pov)
-
         track.draw(screen, camera2.position, player2_pov)
         car1.draw(screen, camera2.position, player2_pov)
         car2.draw(screen, camera2.position, player2_pov)
+
         screen.blit(text1, textRect1)
         screen.blit(text2, textRect2)
 
