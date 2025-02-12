@@ -39,7 +39,7 @@ class TextInput:
 
     def __str__(self):
         """Return the player nickname."""
-        return str(self.text) if self.text else 'Player 1'
+        return str(self.text)
 
     def handle_event(self, event):
         """Handle event for input field."""

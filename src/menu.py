@@ -40,11 +40,21 @@ class Menu:
                 return True
         return False
 
-    def display_winner(self, screen, player):
+    def display_winner(self, screen, player1, player2):
         """Draw winner on screen."""
+
+        player, loser_nickname, loser_time = (player1, str(player2), player2.car.finish_time
+        if player1.car.finish_time < player2.car.finish_time
+        else (player2, str(player1), player1.car.finish_time))
+
         screen.fill(GRAY)
         screen.blit(self.background, (0, 0))
-        draw_text(f"{str(player)} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        draw_text(f"{str(player)} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 20)
+
+        minutes, seconds = divmod(player.car.finish_time, 60)
+        draw_text(f"{str(player)}: {minutes:02}:{seconds:02}", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100)
+        minutes, seconds = divmod(loser_time, 60)
+        draw_text(f"{loser_nickname}: {minutes:02}:{seconds:02}", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 120)
         pygame.display.update()
 
     def update(self, mouse_pos):
@@ -60,7 +70,9 @@ class Menu:
 
     def get_player_names(self):
         """Get player names from input fields."""
-        return str(self.player1_input), str(self.player2_input)
+        name_1 = self.player1_input if self.player1_input else 'Player 1'
+        name_2 = self.player2_input if self.player2_input else 'Player 2'
+        return name_1, name_2
 
     def run_countdown(self, screen):
         """Run countdown animation."""

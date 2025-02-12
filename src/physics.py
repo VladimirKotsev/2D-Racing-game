@@ -85,6 +85,7 @@ class Car:
         self.has_started = False
         self.has_finished = False
         self.time_start = 0
+        self.finish_time = 0
 
         self.layers = []
         car_image_path = CAR_IMAGES_PATH + ('red_car' if color == RED else 'blue_car')
@@ -202,7 +203,7 @@ class Car:
 
         car_pos = (int(self.position.x), int(self.position.y))
         self.off_track = not track.is_on_track(car_pos)
-        self.has_finished = track.is_on_race_line(self)
+        track.is_on_race_line(self)
         is_cheating = track.is_cheating(car_pos)
 
         # Reduce speed if offtrack
@@ -383,7 +384,11 @@ class Track:
                     car.has_started = True
                     car.time_start = time.time()  # Start the timer
                     return False
-                elif car.has_started and int(time.time() - car.time_start) >= CAR_MINIMUM_AFTER_START:
+                elif (car.has_started and
+                      int(time.time() - car.time_start) >= CAR_MINIMUM_AFTER_START and
+                      car.finish_time == 0):
+                    car.has_finished = True
+                    car.finish_time = int(time.time() - car.time_start)
                     return True
                 else:
                     return False
@@ -436,7 +441,11 @@ class Player:
         """Setter for nickname."""
         self._nickname = new_nickname
 
-    def is_winner(self):
+    def get_time(self):
+        """Return player's finish time."""
+        return self.car.finish_time
+
+    def has_finished(self):
         """Return if player is winner."""
         return self.car.has_finished
 

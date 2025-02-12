@@ -58,11 +58,8 @@ while True:
             player2.rematch()
             pygame.display.update()
 
-    if player1.is_winner():
-        menu.display_winner(screen, player1)
-        current_state = END_GAME
-    if player2.is_winner():
-        menu.display_winner(screen, player2)
+    if player1.has_finished() and player2.has_finished():
+        menu.display_winner(screen, player1, player2)
         current_state = END_GAME
 
     if current_state == MENU:
