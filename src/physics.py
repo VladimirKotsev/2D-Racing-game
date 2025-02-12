@@ -66,6 +66,8 @@ class Car:
 
     def __init__(self, x, y, angular_velocity, color, controls):
         """Return a new instance of Car."""
+        self.start_position = Vector(x, y)
+        self.start_angular_velocity = angular_velocity
         self.position = Vector(x, y)
         self.velocity = Vector()
         self.acceleration = Vector()
@@ -81,7 +83,7 @@ class Car:
         self.collision_cooldown = 0
         self.off_track = False
         self.has_started = False
-        self.is_winner = False
+        self.has_finished = False
         self.time_start = 0
 
         self.layers = []
@@ -91,13 +93,13 @@ class Car:
             enlargen_img = pygame.transform.scale_by(img, (CAR_SPRITESTACK_ENLARGE, CAR_SPRITESTACK_ENLARGE))
             self.layers.append(enlargen_img)
 
-    def play_again(self, x, y, angular_velocity):
+    def rematch(self):
         self.off_track = False
         self.has_started = False
-        self.is_winner = False
-        self.position = Vector(x, y)
+        self.has_finished = False
+        self.position = self.start_position
         self.velocity = Vector()
-        self.angular_velocity = angular_velocity
+        self.angular_velocity = self.start_angular_velocity
         self.rotation = CAR_ROTATION
         self.time_start = 0
 
@@ -200,7 +202,7 @@ class Car:
 
         car_pos = (int(self.position.x), int(self.position.y))
         self.off_track = not track.is_on_track(car_pos)
-        self.is_winner = track.is_on_race_line(self)
+        self.has_finished = track.is_on_race_line(self)
         is_cheating = track.is_cheating(car_pos)
 
         # Reduce speed if offtrack
@@ -420,6 +422,13 @@ class Player:
         self.camera = Camera(car.position.x, car.position.y)
         self.player_pov = player_pov
 
+    def __str__(self):
+        """Return player's nickname."""
+        return str(self.nickname)
+
+    def is_winner(self):
+        return self.car.has_finished
+
     def update(self, track):
         """Update player's car and camera."""
         self.car.update(track.outer_bounds, track)
@@ -433,3 +442,6 @@ class Player:
     def check_collision(self, other_player):
         """Check for collision between two players."""
         self.car.check_collision(other_player.car)
+
+    def rematch(self):
+        self.car.rematch()

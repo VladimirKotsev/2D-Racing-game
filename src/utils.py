@@ -46,6 +46,12 @@ def draw_rounded_rect(surface, rect, color, corner_radius):
     surface.blit(rect_surface, rect)
     return rect_surface
 
+def display_winner(screen, background, player):
+    screen.fill(GRAY)
+    screen.blit(background, (0, 0))
+    draw_text(f"{player} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    pygame.display.update()
+
 
 class TextInput:
     """Represents a text field for player nickname."""

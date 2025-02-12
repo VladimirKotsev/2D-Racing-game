@@ -42,10 +42,6 @@ car2 = Car(track.p2_start[0], track.p2_start[1], track.angular_velocity, BLUE, {
     'right': pygame.K_KP6 or pygame.K_RIGHT
 })
 
-# Create cameras
-camera1 = Camera(car1.position.x, car1.position.y)
-camera2 = Camera(car2.position.x, car2.position.y)
-
 # Create POV's
 player1_pov = pygame.Rect(0, 0, SPLIT_WIDTH, SCREEN_HEIGHT)
 player2_pov = pygame.Rect(SPLIT_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -65,7 +61,6 @@ current_state = 1
 
 while True:
     mouse_pos = pygame.mouse.get_pos()  # Get current mouse position
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -76,24 +71,18 @@ while True:
             player2_input.handle_event(event)
         if event.type == pygame.MOUSEBUTTONDOWN:
             if current_state == MENU and play_button.is_clicked(event.pos):
-                current_state = COUNTDOWN  # Switch to countdown state
+                current_state = COUNTDOWN
             if current_state == END_GAME:
                 current_state = MENU
-                car1.play_again(track.p1_start[0], track.p1_start[1], track.angular_velocity)
-                car2.play_again(track.p2_start[0], track.p2_start[1], track.angular_velocity)
+                player1.rematch()
+                player2.rematch()
                 pygame.display.update()
 
-    if car1.is_winner:
-        screen.fill(GRAY)
-        screen.blit(background, (0, 0))
-        draw_text(f"{str(player1_input)} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        pygame.display.update()
+    if player1.is_winner():
+        display_winner(screen, background, player1)
         current_state = END_GAME
-    if car2.is_winner:
-        screen.fill(GRAY)
-        screen.blit(background, (0, 0))
-        draw_text(f"{str(player2_input)} is the winner!", game_font, GREEN, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        pygame.display.update()
+    if player2.is_winner():
+        display_winner(screen, background, player2)
         current_state = END_GAME
 
     if current_state == MENU:
