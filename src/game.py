@@ -1,6 +1,9 @@
 import sys
 import pygame
 
+# Player names display right!
+# Check timing system!
+
 from physics import Track, Car, Player
 from constants import *
 
@@ -25,10 +28,14 @@ car1 = Car(track.p1_start[0], track.p1_start[1], track.angular_velocity, RED, {
     'right': pygame.K_d
 })
 car2 = Car(track.p2_start[0], track.p2_start[1], track.angular_velocity, BLUE, {
-    'up': pygame.K_KP8 or pygame.K_UP,
-    'down': pygame.K_KP5 or pygame.K_DOWN,
-    'left': pygame.K_KP4 or pygame.K_LEFT,
-    'right': pygame.K_KP6 or pygame.K_RIGHT
+    # 'up': pygame.K_KP8 or pygame.K_UP,
+    # 'down': pygame.K_KP5 or pygame.K_DOWN,
+    # 'left': pygame.K_KP4 or pygame.K_LEFT,
+    # 'right': pygame.K_KP6 or pygame.K_RIGHT
+    'up': pygame.K_UP,
+    'down': pygame.K_DOWN,
+    'left': pygame.K_LEFT,
+    'right': pygame.K_RIGHT
 })
 
 # Create POV's
@@ -87,3 +94,4 @@ while True:
         pygame.display.flip()
 
         clock.tick(FPS)
+

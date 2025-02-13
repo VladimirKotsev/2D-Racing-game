@@ -39,6 +39,8 @@ class TextInput:
 
     def __str__(self):
         """Return the player nickname."""
+        if self.text.isspace():
+            return ''
         return str(self.text)
 
     def handle_event(self, event):
@@ -51,10 +53,10 @@ class TextInput:
             elif len(self.text) < self.max_chars and event.unicode.isprintable():
                 self.text += event.unicode
 
-    def draw(self, surface):
+    def draw(self, screen):
         """Draw input fields to screen."""
         color = (163, 116, 8) if self.active else (224, 175, 61)
-        draw_rounded_rect(surface, self.rect, color, self.corner_radius)
+        draw_rounded_rect(screen, self.rect, color, self.corner_radius)
 
         if self.text:
             text_surface = self.font.render(self.text, True, BLACK)
@@ -62,7 +64,7 @@ class TextInput:
             text_surface = self.font.render(self.placeholder, True, WHITE)
 
         text_rect = text_surface.get_rect(center=self.rect.center)
-        surface.blit(text_surface, text_rect)
+        screen.blit(text_surface, text_rect)
 
 class Button:
     """Represent a clickable button."""
